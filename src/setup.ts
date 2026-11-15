@@ -15,7 +15,7 @@ export type FamilyInfo = {
 	/** Where IP address and access code are on the printer's screen. */
 	menu: string;
 	/** Drawing on the key: closed box, open frame (bed slinger), wide box. */
-	shape: "x1" | "p" | "open" | "wide";
+	shape: "x1" | "p" | "open" | "wide" | "nine";
 };
 
 /**
@@ -31,7 +31,7 @@ export const FAMILIES: FamilyInfo[] = [
 	{ id: "A1", name: "A1", models: "A1 · A1 mini", menu: "WLAN", shape: "open" },
 	{ id: "A2", name: "A2L", models: "A2L", menu: "WLAN", shape: "open" },
 	{ id: "H2", name: "H2", models: "H2D · H2S · H2C", menu: "Netzwerk", shape: "wide" },
-	{ id: "H3", name: "H3C", models: "H3C", menu: "Netzwerk", shape: "wide" },
+	{ id: "H3", name: "H3C", models: "H3C · 9 Köpfe", menu: "Netzwerk", shape: "nine" },
 ];
 
 export function familyInfo(id: GuideFamily): FamilyInfo {

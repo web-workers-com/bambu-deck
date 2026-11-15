@@ -2,7 +2,7 @@
 import type { Family } from "../bambu/models.js";
 
 /** Which drawing: X1/X2 (square, status light), P1/P2, open bed slinger (A1/A2), wide (H2/H3, two nozzles). */
-export type Shape = "x1" | "p" | "open" | "wide";
+export type Shape = "x1" | "p" | "open" | "wide" | "nine";
 
 export function shapeOf(family: Family | undefined): Shape {
 	switch (family) {
@@ -13,8 +13,9 @@ export function shapeOf(family: Family | undefined): Shape {
 		case "A2":
 			return "open";
 		case "H2":
-		case "H3":
 			return "wide";
+		case "H3":
+			return "nine";
 		default:
 			return "p";
 	}
@@ -52,6 +53,16 @@ export function printerOutline(shape: Shape, cx: number, cy: number, accent: str
 				pane(36, 16, 88, 62, 4) +
 				`<rect x="70" y="20" width="9" height="10" rx="2" fill="#C9CDD3"/><rect x="81" y="20" width="9" height="10" rx="2" fill="#C9CDD3"/>` +
 				`<rect x="36" y="82" width="88" height="5" rx="2" fill="${BASE}"/><circle cx="118" cy="84.5" r="2.2" fill="${accent}"/>`;
+			break;
+		case "nine":
+			// H3C: a tool changer with nine heads parked along the top.
+			m =
+				body(24, 6, 112, 86, 9) +
+				pane(32, 14, 96, 64, 4) +
+				`<path d="M34 30 h92" stroke="#2A2D31" stroke-width="3"/>` +
+				Array.from({ length: 9 }, (_, i) => `<rect x="${36 + i * 10}" y="18" width="7" height="9" rx="1.5" fill="#C9CDD3"/><path d="M${38.5 + i * 10} 27 h2 l-0.6 2 h-0.8z" fill="#C9A24A"/>`).join("") +
+				`<rect x="74" y="44" width="12" height="10" rx="2" fill="#E9E6DF"/><path d="M78 54 h4 l-1 3 h-2z" fill="#C9A24A"/>` +
+				`<rect x="32" y="82" width="96" height="5" rx="2" fill="${BASE}"/><circle cx="122" cy="84.5" r="2.2" fill="${accent}"/>`;
 			break;
 		default:
 			m = body(40, 12, 80, 80, 8) + pane(48, 20, 64, 58, 4) + `<rect x="48" y="82" width="64" height="5" rx="2" fill="${BASE}"/>`;

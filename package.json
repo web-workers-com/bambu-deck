@@ -1,6 +1,6 @@
 {
   "name": "bambu-deck",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Bambu Deck: a Stream Deck plugin for Bambu Lab printers. Bao the panda watches your prints and takes over the deck when one needs you.",
   "license": "MIT",
   "type": "module",
