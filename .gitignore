@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.streamDeckPlugin
+com.bambudeck.plugin.sdPlugin/bin/
+com.bambudeck.plugin.sdPlugin/logs/
+.build/
+.DS_Store
+*.tsbuildinfo
+.env.deploy

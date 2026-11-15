@@ -1,0 +1,377 @@
+{
+	"$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
+	"Name": "Bambu Deck",
+	"Version": "0.1.0.0",
+	"Author": "Bambu Deck",
+	"Description": "Watch less. Print more. Bao the panda watches your Bambu Lab printers: progress, AMS spools, temperatures, and the whole deck when a print is done or needs you. Runs on your LAN. Unofficial, not affiliated with Bambu Lab.",
+	"Category": "Bambu Deck",
+	"CategoryIcon": "imgs/plugin/category-icon",
+	"Icon": "imgs/plugin/marketplace",
+	"URL": "https://bambu-deck.com",
+	"CodePath": "bin/plugin.js",
+	"UUID": "com.bambudeck.plugin",
+	"SDKVersion": 3,
+	"Software": {
+		"MinimumVersion": "7.1"
+	},
+	"OS": [
+		{
+			"Platform": "windows",
+			"MinimumVersion": "10"
+		},
+		{
+			"Platform": "mac",
+			"MinimumVersion": "12"
+		}
+	],
+	"Nodejs": {
+		"Version": "20"
+	},
+	"Actions": [
+		{
+			"UUID": "com.bambudeck.plugin.printer",
+			"Name": "Bao (Drucker)",
+			"Tooltip": "Zeigt, wie es dem Drucker geht: schläft, heizt, druckt, fertig, Fehler. Drücken wechselt Prozent, Restzeit und Schicht. Hier richtest du auch deine Drucker ein.",
+			"Icon": "imgs/actions/printer/icon",
+			"Controllers": [
+				"Keypad"
+			],
+			"PropertyInspectorPath": "ui/printer.html",
+			"UserTitleEnabled": false,
+			"DisableAutomaticStates": true,
+			"States": [
+				{
+					"Image": "imgs/actions/printer/key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"UUID": "com.bambudeck.plugin.tray",
+			"Name": "AMS-Spule",
+			"Tooltip": "Eine Spule im AMS (A1 bis D4, HT, extern): Farbe, Material und wie viel noch drauf ist.",
+			"Icon": "imgs/actions/tray/icon",
+			"Controllers": [
+				"Keypad"
+			],
+			"PropertyInspectorPath": "ui/tray.html",
+			"UserTitleEnabled": false,
+			"DisableAutomaticStates": true,
+			"States": [
+				{
+					"Image": "imgs/actions/tray/key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"UUID": "com.bambudeck.plugin.humidity",
+			"Name": "AMS-Feuchte",
+			"Tooltip": "Feuchte im AMS, beim AMS 2 Pro und AMS HT auch die Trockenzeit.",
+			"Icon": "imgs/actions/humidity/icon",
+			"Controllers": [
+				"Keypad"
+			],
+			"PropertyInspectorPath": "ui/humidity.html",
+			"UserTitleEnabled": false,
+			"DisableAutomaticStates": true,
+			"States": [
+				{
+					"Image": "imgs/actions/humidity/key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"UUID": "com.bambudeck.plugin.temp",
+			"Name": "Temperaturen",
+			"Tooltip": "Düse, Bett oder Kammer.",
+			"Icon": "imgs/actions/temp/icon",
+			"Controllers": [
+				"Keypad"
+			],
+			"PropertyInspectorPath": "ui/temp.html",
+			"UserTitleEnabled": false,
+			"DisableAutomaticStates": true,
+			"States": [
+				{
+					"Image": "imgs/actions/temp/key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"UUID": "com.bambudeck.plugin.pause",
+			"Name": "Pause / Weiter",
+			"Tooltip": "Hält den Druck an oder setzt ihn fort.",
+			"Icon": "imgs/actions/pause/icon",
+			"Controllers": [
+				"Keypad"
+			],
+			"PropertyInspectorPath": "ui/control.html",
+			"UserTitleEnabled": false,
+			"DisableAutomaticStates": true,
+			"States": [
+				{
+					"Image": "imgs/actions/pause/key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"UUID": "com.bambudeck.plugin.stop",
+			"Name": "Stopp (halten)",
+			"Tooltip": "Bricht den Druck ab, aber nur, wenn du die Taste zwei Sekunden hältst.",
+			"Icon": "imgs/actions/stop/icon",
+			"Controllers": [
+				"Keypad"
+			],
+			"PropertyInspectorPath": "ui/control.html",
+			"UserTitleEnabled": false,
+			"DisableAutomaticStates": true,
+			"States": [
+				{
+					"Image": "imgs/actions/stop/key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"UUID": "com.bambudeck.plugin.light",
+			"Name": "Kammerlicht",
+			"Tooltip": "Schaltet das Licht im Drucker an und aus.",
+			"Icon": "imgs/actions/light/icon",
+			"Controllers": [
+				"Keypad"
+			],
+			"PropertyInspectorPath": "ui/control.html",
+			"UserTitleEnabled": false,
+			"DisableAutomaticStates": true,
+			"States": [
+				{
+					"Image": "imgs/actions/light/key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"UUID": "com.bambudeck.plugin.speed",
+			"Name": "Tempo",
+			"Tooltip": "Wechselt Leise, Standard und Sport (Ludicrous auf Wunsch).",
+			"Icon": "imgs/actions/speed/icon",
+			"Controllers": [
+				"Keypad"
+			],
+			"PropertyInspectorPath": "ui/speed.html",
+			"UserTitleEnabled": false,
+			"DisableAutomaticStates": true,
+			"States": [
+				{
+					"Image": "imgs/actions/speed/key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"UUID": "com.bambudeck.plugin.dial",
+			"Name": "Drehregler",
+			"Tooltip": "Stream Deck +: Düse, Bett, Lüfter oder Tempo nachstellen.",
+			"Icon": "imgs/actions/dial/icon",
+			"Controllers": [
+				"Encoder"
+			],
+			"Encoder": {
+				"layout": "$B1",
+				"TriggerDescription": {
+					"Rotate": "Ziel ändern",
+					"Push": "–"
+				}
+			},
+			"PropertyInspectorPath": "ui/dial.html",
+			"UserTitleEnabled": false,
+			"States": [
+				{
+					"Image": "imgs/actions/dial/key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"UUID": "com.bambudeck.plugin.test",
+			"Name": "Alarm testen",
+			"Tooltip": "Löst einen Beispiel-Alarm aus, damit du siehst, wie das Deck reagiert.",
+			"Icon": "imgs/actions/test/icon",
+			"Controllers": [
+				"Keypad"
+			],
+			"PropertyInspectorPath": "ui/test.html",
+			"UserTitleEnabled": false,
+			"States": [
+				{
+					"Image": "imgs/actions/test/key",
+					"ShowTitle": false
+				}
+			]
+		},
+		{
+			"UUID": "com.bambudeck.plugin.alert",
+			"Name": "Alarm-Taste",
+			"Tooltip": "Teil des Alarm-Profils.",
+			"Icon": "imgs/actions/printer/icon",
+			"Controllers": [
+				"Keypad"
+			],
+			"UserTitleEnabled": false,
+			"SupportedInMultiActions": false,
+			"VisibleInActionsList": false,
+			"States": [
+				{
+					"Image": "imgs/actions/printer/key",
+					"ShowTitle": false
+				}
+			]
+		}
+	],
+	"Profiles": [
+		{
+			"Name": "Bambu Deck",
+			"DeviceType": 0,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck Alarm",
+			"DeviceType": 0,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck Mini",
+			"DeviceType": 1,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck Mini Alarm",
+			"DeviceType": 1,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck XL",
+			"DeviceType": 2,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck XL Alarm",
+			"DeviceType": 2,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck Mobile",
+			"DeviceType": 3,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck Mobile Alarm",
+			"DeviceType": 3,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck Plus",
+			"DeviceType": 7,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck Plus Alarm",
+			"DeviceType": 7,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck Neo",
+			"DeviceType": 9,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck Neo Alarm",
+			"DeviceType": 9,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck Studio",
+			"DeviceType": 10,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck Studio Alarm",
+			"DeviceType": 10,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck Virtual",
+			"DeviceType": 11,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck Virtual Alarm",
+			"DeviceType": 11,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck Galleon",
+			"DeviceType": 12,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck Galleon Alarm",
+			"DeviceType": 12,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck Plus XL",
+			"DeviceType": 13,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		},
+		{
+			"Name": "Bambu Deck Plus XL Alarm",
+			"DeviceType": 13,
+			"Readonly": false,
+			"DontAutoSwitchWhenInstalled": true,
+			"AutoInstall": true
+		}
+	]
+}

@@ -1,0 +1,43 @@
+{
+  "name": "bambu-deck",
+  "version": "0.1.0",
+  "description": "Bambu Deck: a Stream Deck plugin for Bambu Lab printers. Bao the panda watches your prints and takes over the deck when one needs you.",
+  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20.5.1"
+  },
+  "scripts": {
+    "prebuild-scripts": "tsc -p tsconfig.scripts.json",
+    "icons": "npm run prebuild-scripts && node scripts/generate-ui.mjs && node scripts/generate-icons.mjs",
+    "profiles": "npm run prebuild-scripts && node scripts/generate-profiles.mjs",
+    "build": "npm run icons && npm run profiles && rollup -c",
+    "watch": "rollup -c -w --watch.onEnd=\"streamdeck restart com.bambudeck.plugin\"",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run prebuild-scripts && node --test tests/*.test.mjs",
+    "validate": "streamdeck validate com.bambudeck.plugin.sdPlugin",
+    "pack": "npm run build && node scripts/pack.mjs",
+    "link": "node scripts/dev-link.mjs",
+    "unlink": "node scripts/dev-link.mjs --unlink",
+    "probe": "npm run prebuild-scripts && node scripts/probe.mjs",
+    "preview": "npm run prebuild-scripts && node scripts/preview.mjs",
+    "pack:ci": "rollup -c && node scripts/pack.mjs"
+  },
+  "dependencies": {
+    "@elgato/streamdeck": "^3.0.4"
+  },
+  "devDependencies": {
+    "@elgato/cli": "^1.10.4",
+    "@fontsource/fredoka": "^5.3.0",
+    "@fontsource/inter": "^5.3.0",
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-node-resolve": "^16.0.0",
+    "@rollup/plugin-typescript": "^12.1.1",
+    "@types/node": "^22.10.0",
+    "rollup": "^4.28.0",
+    "sharp": "^0.35.0",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.2"
+  }
+}
