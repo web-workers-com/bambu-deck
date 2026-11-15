@@ -5,10 +5,17 @@
 <title>Bambu Deck</title>
 <script src="./libs/sdpi-components.js"></script>
 <style>
-.hint{color:#9d9a94;font-size:11px;line-height:1.5;padding:4px 0 8px}
-.hint b{color:#B9DD8C;font-weight:600}
-details{margin:6px 0;border-top:1px solid #333;padding-top:6px}
-summary{cursor:pointer;color:#ddd;font-size:12px;padding:4px 0}
+/* Same type as the sdpi components, so our own rows look native. */
+body{font-family:"Segoe UI",Arial,Roboto,Helvetica,sans-serif;font-size:9pt;color:#969696;-webkit-font-smoothing:antialiased}
+.hint{color:#969696;font-size:8.5pt;line-height:1.45;padding:2px 0 8px}
+.hint b{color:#d8d8d8;font-weight:600}
+.section{color:#d8d8d8;font-weight:600;font-size:9pt;padding:10px 0 4px;margin-top:6px;border-top:1px solid #3d3d3d}
+details{margin:0;border-top:1px solid #3d3d3d}
+summary{cursor:pointer;list-style:none;color:#d8d8d8;font-weight:600;font-size:9pt;padding:8px 0 6px;display:flex;align-items:center;gap:6px}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"";width:0;height:0;border-left:4px solid #969696;border-top:4px solid transparent;border-bottom:4px solid transparent;transition:transform .15s}
+details[open] summary::before{transform:rotate(90deg)}
+summary .sub{color:#969696;font-weight:400}
 </style>
 </head>
 <body>

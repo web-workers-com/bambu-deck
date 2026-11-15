@@ -16,10 +16,17 @@ const page = (body) => `<!DOCTYPE html>
 <title>Bambu Deck</title>
 <script src="./libs/sdpi-components.js"></script>
 <style>
-.hint{color:#9d9a94;font-size:11px;line-height:1.5;padding:4px 0 8px}
-.hint b{color:#B9DD8C;font-weight:600}
-details{margin:6px 0;border-top:1px solid #333;padding-top:6px}
-summary{cursor:pointer;color:#ddd;font-size:12px;padding:4px 0}
+/* Same type as the sdpi components, so our own rows look native. */
+body{font-family:"Segoe UI",Arial,Roboto,Helvetica,sans-serif;font-size:9pt;color:#969696;-webkit-font-smoothing:antialiased}
+.hint{color:#969696;font-size:8.5pt;line-height:1.45;padding:2px 0 8px}
+.hint b{color:#d8d8d8;font-weight:600}
+.section{color:#d8d8d8;font-weight:600;font-size:9pt;padding:10px 0 4px;margin-top:6px;border-top:1px solid #3d3d3d}
+details{margin:0;border-top:1px solid #3d3d3d}
+summary{cursor:pointer;list-style:none;color:#d8d8d8;font-weight:600;font-size:9pt;padding:8px 0 6px;display:flex;align-items:center;gap:6px}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"";width:0;height:0;border-left:4px solid #969696;border-top:4px solid transparent;border-bottom:4px solid transparent;transition:transform .15s}
+details[open] summary::before{transform:rotate(90deg)}
+summary .sub{color:#969696;font-weight:400}
 </style>
 </head>
 <body>
@@ -65,7 +72,7 @@ const MODELS = [
 ];
 
 const printerSetup = (n) => `<details${n === 1 ? " open" : ""}>
-<summary>Drucker ${n}</summary>
+<summary>Drucker ${n}${n === 1 ? "" : ' <span class="sub">(optional)</span>'}</summary>
 <sdpi-item label="Name"><sdpi-textfield setting="p${n}_name" global placeholder="${n === 1 ? "Werkstatt" : `Drucker ${n}`}"></sdpi-textfield></sdpi-item>
 <sdpi-item label="IP-Adresse"><sdpi-textfield setting="p${n}_host" global placeholder="192.168.1.42"></sdpi-textfield></sdpi-item>
 <sdpi-item label="Seriennummer"><sdpi-textfield setting="p${n}_serial" global placeholder="00M00A…"></sdpi-textfield></sdpi-item>
@@ -73,12 +80,11 @@ const printerSetup = (n) => `<details${n === 1 ? " open" : ""}>
 <sdpi-item label="Modell"><sdpi-select setting="p${n}_model" global default="auto">${MODELS.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</sdpi-select></sdpi-item>
 </details>`;
 
-const whereHint = `<div class="hint">IP-Adresse und Zugangscode stehen am Drucker unter <b>Einstellungen › Netzwerk</b> (X1, P2S, H2) bzw. <b>Einstellungen › WLAN</b> (P1, A1). Die Seriennummer steht auf dem Aufkleber am Drucker. Bei <b>X2D, A2L, H2C, H2D Pro und H3C</b> das Modell bitte von Hand wählen. Die Verbindung läuft direkt im Heimnetz, ohne Cloud. Zum Steuern (Pause, Licht, Tempo) braucht neuere Firmware den LAN-Modus mit Entwicklermodus; Anzeigen geht immer.</div>`;
-const setupSection = `<details open><summary>Drucker einrichten</summary>
+const whereHint = `<div class="hint">IP-Adresse und Zugangscode stehen am Drucker unter <b>Einstellungen › Netzwerk</b> (X1, P2S, H2) bzw. <b>Einstellungen › WLAN</b> (P1, A1). Die Seriennummer steht auf dem Typenschild am Drucker. Bei <b>X2D, A2L, H2C, H2D Pro und H3C</b> das Modell bitte von Hand wählen. Die Verbindung läuft direkt im Heimnetz, ohne Cloud. Zum Steuern (Pause, Licht, Tempo) braucht neuere Firmware den LAN-Modus mit Entwicklermodus; Anzeigen geht immer.</div>`;
+const setupSection = `<div class="section">Drucker einrichten</div>
 ${whereHint}
-${[1, 2, 3, 4].map(printerSetup).join("\n")}
-</details>`;
-const demoSection = `<details><summary>Demo</summary>
+${[1, 2, 3, 4].map(printerSetup).join("\n")}`;
+const demoSection = `<details><summary>Demo <span class="sub">(ohne Drucker ausprobieren)</span></summary>
 <sdpi-item label="Demo-Drucker"><sdpi-checkbox setting="demo" global label="drei simulierte Drucker zeigen"></sdpi-checkbox></sdpi-item>
 <div class="hint">X1C mit AMS, A1 mini mit AMS lite (Filament läuft aus) und H2D mit AMS 2 Pro und AMS HT (trocknet). Zum Ausprobieren ohne Drucker.</div>
 </details>`;
