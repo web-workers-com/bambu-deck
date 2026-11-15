@@ -14,14 +14,14 @@ summary{cursor:pointer;color:#ddd;font-size:12px;padding:4px 0}
 <body>
 <div class="hint">Trag hier deinen Drucker ein. Sobald er antwortet, verschwindet die Anleitung und das Deck zeigt wieder dein Profil.</div>
 <details open><summary>Drucker einrichten</summary>
-<div class="hint">IP-Adresse und Zugangscode stehen am Drucker unter <b>Einstellungen › Netzwerk</b> (X1, P2S, H2) bzw. <b>Einstellungen › WLAN</b> (P1, A1). Die Seriennummer steht auf dem Aufkleber am Drucker. Die Verbindung läuft direkt im Heimnetz, ohne Cloud. Zum Steuern (Pause, Licht, Tempo) braucht neuere Firmware den LAN-Modus mit Entwicklermodus; Anzeigen geht immer.</div>
+<div class="hint">IP-Adresse und Zugangscode stehen am Drucker unter <b>Einstellungen › Netzwerk</b> (X1, P2S, H2) bzw. <b>Einstellungen › WLAN</b> (P1, A1). Die Seriennummer steht auf dem Aufkleber am Drucker. Bei <b>X2D, A2L, H2C, H2D Pro und H3C</b> das Modell bitte von Hand wählen. Die Verbindung läuft direkt im Heimnetz, ohne Cloud. Zum Steuern (Pause, Licht, Tempo) braucht neuere Firmware den LAN-Modus mit Entwicklermodus; Anzeigen geht immer.</div>
 <details open>
 <summary>Drucker 1</summary>
 <sdpi-item label="Name"><sdpi-textfield setting="p1_name" global placeholder="Werkstatt"></sdpi-textfield></sdpi-item>
 <sdpi-item label="IP-Adresse"><sdpi-textfield setting="p1_host" global placeholder="192.168.1.42"></sdpi-textfield></sdpi-item>
 <sdpi-item label="Seriennummer"><sdpi-textfield setting="p1_serial" global placeholder="00M00A…"></sdpi-textfield></sdpi-item>
 <sdpi-item label="Zugangscode"><sdpi-password setting="p1_code" global placeholder="8 Zeichen"></sdpi-password></sdpi-item>
-<sdpi-item label="Modell"><sdpi-select setting="p1_model" global default="auto"><option value="auto">automatisch (Seriennummer)</option><option value="X1C">X1 Carbon</option><option value="X1">X1</option><option value="X1E">X1E</option><option value="P1S">P1S</option><option value="P1P">P1P</option><option value="P2S">P2S</option><option value="A1">A1</option><option value="A1M">A1 mini</option><option value="H2D">H2D</option><option value="H2S">H2S</option></sdpi-select></sdpi-item>
+<sdpi-item label="Modell"><sdpi-select setting="p1_model" global default="auto"><option value="auto">automatisch (Seriennummer)</option><option value="X1C">X1 Carbon</option><option value="X1">X1</option><option value="X1E">X1E</option><option value="P1S">P1S</option><option value="P1P">P1P</option><option value="P2S">P2S</option><option value="A1">A1</option><option value="A1M">A1 mini</option><option value="H2D">H2D</option><option value="H2S">H2S</option><option value="H2C">H2C</option><option value="H2DP">H2D Pro</option><option value="X2D">X2D</option><option value="A2L">A2L</option><option value="H3C">H3C</option></sdpi-select></sdpi-item>
 </details>
 <details>
 <summary>Drucker 2</summary>
@@ -29,7 +29,7 @@ summary{cursor:pointer;color:#ddd;font-size:12px;padding:4px 0}
 <sdpi-item label="IP-Adresse"><sdpi-textfield setting="p2_host" global placeholder="192.168.1.42"></sdpi-textfield></sdpi-item>
 <sdpi-item label="Seriennummer"><sdpi-textfield setting="p2_serial" global placeholder="00M00A…"></sdpi-textfield></sdpi-item>
 <sdpi-item label="Zugangscode"><sdpi-password setting="p2_code" global placeholder="8 Zeichen"></sdpi-password></sdpi-item>
-<sdpi-item label="Modell"><sdpi-select setting="p2_model" global default="auto"><option value="auto">automatisch (Seriennummer)</option><option value="X1C">X1 Carbon</option><option value="X1">X1</option><option value="X1E">X1E</option><option value="P1S">P1S</option><option value="P1P">P1P</option><option value="P2S">P2S</option><option value="A1">A1</option><option value="A1M">A1 mini</option><option value="H2D">H2D</option><option value="H2S">H2S</option></sdpi-select></sdpi-item>
+<sdpi-item label="Modell"><sdpi-select setting="p2_model" global default="auto"><option value="auto">automatisch (Seriennummer)</option><option value="X1C">X1 Carbon</option><option value="X1">X1</option><option value="X1E">X1E</option><option value="P1S">P1S</option><option value="P1P">P1P</option><option value="P2S">P2S</option><option value="A1">A1</option><option value="A1M">A1 mini</option><option value="H2D">H2D</option><option value="H2S">H2S</option><option value="H2C">H2C</option><option value="H2DP">H2D Pro</option><option value="X2D">X2D</option><option value="A2L">A2L</option><option value="H3C">H3C</option></sdpi-select></sdpi-item>
 </details>
 <details>
 <summary>Drucker 3</summary>
@@ -37,7 +37,7 @@ summary{cursor:pointer;color:#ddd;font-size:12px;padding:4px 0}
 <sdpi-item label="IP-Adresse"><sdpi-textfield setting="p3_host" global placeholder="192.168.1.42"></sdpi-textfield></sdpi-item>
 <sdpi-item label="Seriennummer"><sdpi-textfield setting="p3_serial" global placeholder="00M00A…"></sdpi-textfield></sdpi-item>
 <sdpi-item label="Zugangscode"><sdpi-password setting="p3_code" global placeholder="8 Zeichen"></sdpi-password></sdpi-item>
-<sdpi-item label="Modell"><sdpi-select setting="p3_model" global default="auto"><option value="auto">automatisch (Seriennummer)</option><option value="X1C">X1 Carbon</option><option value="X1">X1</option><option value="X1E">X1E</option><option value="P1S">P1S</option><option value="P1P">P1P</option><option value="P2S">P2S</option><option value="A1">A1</option><option value="A1M">A1 mini</option><option value="H2D">H2D</option><option value="H2S">H2S</option></sdpi-select></sdpi-item>
+<sdpi-item label="Modell"><sdpi-select setting="p3_model" global default="auto"><option value="auto">automatisch (Seriennummer)</option><option value="X1C">X1 Carbon</option><option value="X1">X1</option><option value="X1E">X1E</option><option value="P1S">P1S</option><option value="P1P">P1P</option><option value="P2S">P2S</option><option value="A1">A1</option><option value="A1M">A1 mini</option><option value="H2D">H2D</option><option value="H2S">H2S</option><option value="H2C">H2C</option><option value="H2DP">H2D Pro</option><option value="X2D">X2D</option><option value="A2L">A2L</option><option value="H3C">H3C</option></sdpi-select></sdpi-item>
 </details>
 <details>
 <summary>Drucker 4</summary>
@@ -45,7 +45,7 @@ summary{cursor:pointer;color:#ddd;font-size:12px;padding:4px 0}
 <sdpi-item label="IP-Adresse"><sdpi-textfield setting="p4_host" global placeholder="192.168.1.42"></sdpi-textfield></sdpi-item>
 <sdpi-item label="Seriennummer"><sdpi-textfield setting="p4_serial" global placeholder="00M00A…"></sdpi-textfield></sdpi-item>
 <sdpi-item label="Zugangscode"><sdpi-password setting="p4_code" global placeholder="8 Zeichen"></sdpi-password></sdpi-item>
-<sdpi-item label="Modell"><sdpi-select setting="p4_model" global default="auto"><option value="auto">automatisch (Seriennummer)</option><option value="X1C">X1 Carbon</option><option value="X1">X1</option><option value="X1E">X1E</option><option value="P1S">P1S</option><option value="P1P">P1P</option><option value="P2S">P2S</option><option value="A1">A1</option><option value="A1M">A1 mini</option><option value="H2D">H2D</option><option value="H2S">H2S</option></sdpi-select></sdpi-item>
+<sdpi-item label="Modell"><sdpi-select setting="p4_model" global default="auto"><option value="auto">automatisch (Seriennummer)</option><option value="X1C">X1 Carbon</option><option value="X1">X1</option><option value="X1E">X1E</option><option value="P1S">P1S</option><option value="P1P">P1P</option><option value="P2S">P2S</option><option value="A1">A1</option><option value="A1M">A1 mini</option><option value="H2D">H2D</option><option value="H2S">H2S</option><option value="H2C">H2C</option><option value="H2DP">H2D Pro</option><option value="X2D">X2D</option><option value="A2L">A2L</option><option value="H3C">H3C</option></sdpi-select></sdpi-item>
 </details>
 </details>
 <details><summary>Demo</summary>

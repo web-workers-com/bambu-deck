@@ -3,7 +3,7 @@
  * model in the status report, but the first digits of the serial number do.
  */
 
-export type Family = "X1" | "P1" | "P2" | "A1" | "H2" | "unknown";
+export type Family = "X1" | "X2" | "P1" | "P2" | "A1" | "A2" | "H2" | "H3" | "unknown";
 
 export type Model = {
 	id: string;
@@ -41,6 +41,12 @@ export const MODELS: Model[] = [
 	M("A1M", "A1 mini", "A1", { light: false, ams: "lite" }),
 	M("H2D", "H2D", "H2", { chamber: true, dualNozzle: true }),
 	M("H2S", "H2S", "H2", { chamber: true }),
+	// Newer models (2025/2026): features as announced, not checked on hardware.
+	M("H2C", "H2C", "H2", { chamber: true, dualNozzle: true }),
+	M("H2DP", "H2D Pro", "H2", { chamber: true, dualNozzle: true }),
+	M("X2D", "X2D", "X2", { chamber: true, dualNozzle: true }),
+	M("A2L", "A2L", "A2", { light: false, ams: "lite" }),
+	M("H3C", "H3C", "H3", { chamber: true }),
 ];
 
 /**

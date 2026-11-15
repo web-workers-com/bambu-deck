@@ -57,6 +57,11 @@ const MODELS = [
 	["A1M", "A1 mini"],
 	["H2D", "H2D"],
 	["H2S", "H2S"],
+	["H2C", "H2C"],
+	["H2DP", "H2D Pro"],
+	["X2D", "X2D"],
+	["A2L", "A2L"],
+	["H3C", "H3C"],
 ];
 
 const printerSetup = (n) => `<details${n === 1 ? " open" : ""}>
@@ -68,7 +73,7 @@ const printerSetup = (n) => `<details${n === 1 ? " open" : ""}>
 <sdpi-item label="Modell"><sdpi-select setting="p${n}_model" global default="auto">${MODELS.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</sdpi-select></sdpi-item>
 </details>`;
 
-const whereHint = `<div class="hint">IP-Adresse und Zugangscode stehen am Drucker unter <b>Einstellungen › Netzwerk</b> (X1, P2S, H2) bzw. <b>Einstellungen › WLAN</b> (P1, A1). Die Seriennummer steht auf dem Aufkleber am Drucker. Die Verbindung läuft direkt im Heimnetz, ohne Cloud. Zum Steuern (Pause, Licht, Tempo) braucht neuere Firmware den LAN-Modus mit Entwicklermodus; Anzeigen geht immer.</div>`;
+const whereHint = `<div class="hint">IP-Adresse und Zugangscode stehen am Drucker unter <b>Einstellungen › Netzwerk</b> (X1, P2S, H2) bzw. <b>Einstellungen › WLAN</b> (P1, A1). Die Seriennummer steht auf dem Aufkleber am Drucker. Bei <b>X2D, A2L, H2C, H2D Pro und H3C</b> das Modell bitte von Hand wählen. Die Verbindung läuft direkt im Heimnetz, ohne Cloud. Zum Steuern (Pause, Licht, Tempo) braucht neuere Firmware den LAN-Modus mit Entwicklermodus; Anzeigen geht immer.</div>`;
 const setupSection = `<details open><summary>Drucker einrichten</summary>
 ${whereHint}
 ${[1, 2, 3, 4].map(printerSetup).join("\n")}

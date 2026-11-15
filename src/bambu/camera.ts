@@ -17,11 +17,17 @@ import type { Model } from "./models.js";
 
 export type CameraEvents = { frame: [jpeg: Buffer]; problem: [message: string] };
 
-export type CameraKind = "jpeg" | "rtsps";
+export type CameraKind = "jpeg" | "rtsps" | "auto";
 
-/** P1 and A1 send JPEGs; everything else streams video. */
+/**
+ * P1 and A1 send JPEGs; X1, P2 and H2 stream video. For models nobody has
+ * checked yet (A2, X2, H3, unknown) try video first, then JPEG.
+ */
 export function cameraKind(model: Model): CameraKind {
-	return model.family === "P1" || model.family === "A1" ? "jpeg" : "rtsps";
+	if (model.family === "P1" || model.family === "A1") {
+		return "jpeg";
+	}
+	return model.family === "X1" || model.family === "P2" || model.family === "H2" ? "rtsps" : "auto";
 }
 
 /** The login packet for port 6000: sizes, then user and access code padded to 32 bytes. */
@@ -123,6 +129,7 @@ export class Camera extends EventEmitter<CameraEvents> {
 	#retry: NodeJS.Timeout | undefined;
 	#running = false;
 	#lastFrame = 0;
+	#attempt = 0;
 	latest: Buffer | undefined;
 	/** Counts frames, so keys repaint only when a new one came. */
 	frameNo = 0;
@@ -186,7 +193,9 @@ export class Camera extends EventEmitter<CameraEvents> {
 			this.#fail("Drucker nicht eingerichtet");
 			return;
 		}
-		if (this.kind === "jpeg") {
+		// "auto" alternates between video and JPEG until one gives pictures.
+		const kind = this.kind === "auto" ? (this.#attempt++ % 2 === 0 ? "rtsps" : "jpeg") : this.kind;
+		if (kind === "jpeg") {
 			this.#openJpeg(host, accessCode);
 		} else {
 			this.#openRtsps(host, accessCode);

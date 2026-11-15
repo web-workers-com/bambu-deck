@@ -32,7 +32,7 @@ export function panelItems(model: Pick<Model, "light" | "family">, status: Statu
 	items.push({ kind: "speed" });
 	items.push(...Object.keys(PRESETS).map((preset): PanelItem => ({ kind: "preheat", preset })));
 	items.push({ kind: "fan", which: "part" });
-	if (model.family !== "A1") {
+	if (model.family !== "A1" && model.family !== "A2") {
 		items.push({ kind: "fan", which: "aux" }, { kind: "fan", which: "chamber" });
 	}
 	items.push({ kind: "home" }, { kind: "zup" }, { kind: "zdown" }, { kind: "unload" });

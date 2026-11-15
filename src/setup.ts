@@ -4,7 +4,7 @@
  * one step per key, split into pages when the deck is small. Pure, for tests.
  */
 
-export type GuideFamily = "X1" | "P1" | "P2" | "A1" | "H2";
+export type GuideFamily = "X1" | "X2" | "P1" | "P2" | "A1" | "A2" | "H2" | "H3";
 
 export type FamilyInfo = {
 	id: GuideFamily;
@@ -20,14 +20,18 @@ export type FamilyInfo = {
 
 /**
  * Menu names as on the printer screens in German. Touchscreen printers (X1, P2S,
- * H2) show IP and access code under Network, P1 and A1 under WLAN.
+ * H2) show IP and access code under Network, P1 and A1 under WLAN. For X2D, A2L
+ * and H3C the menus are assumed from their siblings, not checked.
  */
 export const FAMILIES: FamilyInfo[] = [
 	{ id: "X1", name: "X1", models: "X1C · X1 · X1E", menu: "Netzwerk", shape: "box" },
+	{ id: "X2", name: "X2D", models: "X2D", menu: "Netzwerk", shape: "box" },
 	{ id: "P1", name: "P1", models: "P1S · P1P", menu: "WLAN", shape: "box" },
 	{ id: "P2", name: "P2S", models: "P2S", menu: "Netzwerk", shape: "box" },
 	{ id: "A1", name: "A1", models: "A1 · A1 mini", menu: "WLAN", shape: "open" },
-	{ id: "H2", name: "H2", models: "H2D · H2S", menu: "Netzwerk", shape: "wide" },
+	{ id: "A2", name: "A2L", models: "A2L", menu: "WLAN", shape: "open" },
+	{ id: "H2", name: "H2", models: "H2D · H2S · H2C", menu: "Netzwerk", shape: "wide" },
+	{ id: "H3", name: "H3C", models: "H3C", menu: "Netzwerk", shape: "wide" },
 ];
 
 export function familyInfo(id: GuideFamily): FamilyInfo {

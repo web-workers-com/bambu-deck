@@ -61,7 +61,7 @@ export class FanAction extends PrinterAction<FanSettings> {
 
 	protected override async press(printer: Printer, s: FanSettings, key: KeyAction<FanSettings>): Promise<void> {
 		const which = s.which ?? "part";
-		if (printer.status.stage === "offline" || (printer.model.family === "A1" && which !== "part")) {
+		if (printer.status.stage === "offline" || ((printer.model.family === "A1" || printer.model.family === "A2") && which !== "part")) {
 			return;
 		}
 		const now = this.#percent(printer.status, which);

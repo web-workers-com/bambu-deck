@@ -50,10 +50,15 @@ Print done, print failed (not when you cancelled it yourself), paused with an er
 | Series | Models | AMS | Status |
 | --- | --- | --- | --- |
 | X1 | X1 Carbon, X1E | AMS, up to 4 | tested (X1C + AMS) |
+| X2 | X2D | AMS 2 Pro, AMS HT | beta |
 | P1 | P1S, P1P | AMS, up to 4 | beta |
 | P2 | P2S | AMS 2 Pro, AMS HT | beta |
 | A1 | A1, A1 mini | AMS lite | beta |
-| H2 | H2D, H2S | AMS 2 Pro, AMS HT | beta |
+| A2 | A2L | AMS lite | beta |
+| H2 | H2D, H2D Pro, H2S, H2C | AMS 2 Pro, AMS HT | beta |
+| H3 | H3C | AMS 3H | beta |
+
+X2D, A2L, H2C, H2D Pro and H3C are newer than any serial-number list the plugin knows: pick the model by hand in the settings.
 
 Beta means: built from community knowledge and checked against simulated printers, not yet on real hardware. Have one of these? Run
 
