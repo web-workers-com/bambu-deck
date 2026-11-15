@@ -34,9 +34,8 @@ export class PauseAction extends PrinterAction {
 			await send(printer, { kind: "resume" }, key);
 		} else if (stage === "printing" || stage === "heating") {
 			await send(printer, { kind: "pause" }, key);
-		} else {
-			await key.showAlert();
 		}
+		// Otherwise the key is grey: nothing to pause.
 	}
 }
 
@@ -71,7 +70,7 @@ export class StopAction extends PrinterAction {
 			return;
 		}
 		if (!printer || !["printing", "heating", "paused"].includes(printer.status.stage)) {
-			await ev.action.showAlert();
+			// Grey key: nothing to stop, nothing to say.
 			return;
 		}
 		this.#held.set(ev.action.id, Date.now());
@@ -96,7 +95,6 @@ export class LightAction extends PrinterAction {
 
 	protected override async press(printer: Printer, _s: PrinterSettings, key: KeyAction<PrinterSettings>): Promise<void> {
 		if (!printer.model.light) {
-			await key.showAlert();
 			return;
 		}
 		await send(printer, { kind: "light", on: !printer.status.light }, key);

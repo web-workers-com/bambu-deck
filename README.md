@@ -30,6 +30,7 @@ The UI is in German for now.
 | Stop | Only after holding the key for two seconds |
 | Dial (Stream Deck +) | Nozzle, bed, fan or speed |
 | Test alarm | A sample "done" or "error" alarm |
+| Controls | Puts every control across the whole deck: pause, stop (hold), light, speed, preheat, fans, axes, load/unload filament. Whatever the printer lacks is left out; small decks page through, "Fertig" goes back |
 | Preheat | PLA, PETG, ABS/ASA, TPU or cool down; shows the heat-up, press again to switch off. Only while not printing |
 | Fan | Part, auxiliary or chamber fan: off → 50 % → 100 % |
 | Job info | Done at (clock time), time left, layer or file name; press to switch |

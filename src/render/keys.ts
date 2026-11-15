@@ -283,11 +283,11 @@ export function tempKey(s: Status, what: TempWhat): string {
 	}
 	const value = what === "nozzle" ? s.nozzle : what === "bed" ? s.bed : (s.chamber ?? 0);
 	const target = what === "nozzle" ? s.nozzleTarget : what === "bed" ? s.bedTarget : 0;
-	const label = what === "nozzle" ? "Düse" : what === "bed" ? "Bett" : "Kammer";
+	const label = what === "nozzle" ? "Düse" : what === "bed" ? "Bett" : "Kammertemp.";
 	if (target > 0) {
 		inner += ring(C.glow, Math.min(1, value / target), "#3A2A1E");
 	}
-	inner += what === "nozzle" ? nozzleIcon(53, 18) : what === "bed" ? bedIcon(52, 18) : `<rect x="48" y="16" width="24" height="20" rx="4" fill="none" stroke="${C.greyLight}" stroke-width="2.6"/>`;
+	inner += what === "nozzle" ? nozzleIcon(53, 18) : what === "bed" ? bedIcon(52, 18) : `<rect x="44" y="14" width="32" height="26" rx="5" fill="none" stroke="${C.greyLight}" stroke-width="2.4"/><path d="M60 19 v11" stroke="${C.greyLight}" stroke-width="3" stroke-linecap="round"/><circle cx="60" cy="32" r="3.6" fill="${C.greyLight}"/>`;
 	inner += text(what === "chamber" && s.chamber === undefined ? "–" : deg(value), { x: 60, y: 76, size: 28, max: 96, fill: hot(value, target), face: "mono", weight: 700 });
 	inner += text(target > 0 ? `${label} → ${Math.round(target)}°` : label, { x: 60, y: 104, size: 13, max: 100, fill: C.grey, face: "body" });
 	return keyImage(inner);

@@ -137,7 +137,7 @@ center.on("takeover", async () => {
 		if (alerting.has(device.id)) {
 			continue;
 		}
-		if (guiding.delete(device.id) || stopViewing(device.id)) {
+		if (guiding.delete(device.id) || stopViewing(device.id) || stopPanel(device.id)) {
 			// Already on the full-deck profile: the alert takes over from the guide or the camera.
 			alerting.add(device.id);
 			continue;
@@ -167,6 +167,7 @@ export function alertLeft(deviceId: string): void {
 			alerting.delete(deviceId);
 			guiding.delete(deviceId);
 			stopViewing(deviceId);
+			stopPanel(deviceId);
 		}
 	}, 250).unref?.();
 }
@@ -324,7 +325,8 @@ export function openCamera(device: DeviceLike & { size: { columns: number; rows:
 	timer.unref?.();
 	viewTimers.set(device.id, timer);
 	cameraEvents.emit("change");
-	if (guiding.delete(device.id) || showing(device.id)) {
+	if (guiding.delete(device.id) || panelSet.delete(device.id) || showing(device.id)) {
+		panels.delete(device.id);
 		viewingSet.add(device.id);
 		return true;
 	}
@@ -339,5 +341,77 @@ export function closeCamera(deviceId: string): void {
 	if (switched) {
 		viewingSet.add(deviceId);
 		void switchBack(viewingSet, [deviceId]);
+	}
+}
+
+// --- Control panel across the whole deck ---------------------------------------
+
+const panelSet = new Set<string>();
+const panels = new Map<string, { printerId: string; page: number; timer: NodeJS.Timeout }>();
+export const panelEvents = new EventEmitter<{ change: [] }>();
+const PANEL_MS = 3 * 60_000;
+
+/** The panel this device shows: printer and page. */
+export function panelFor(deviceId: string): { printer: Printer; page: number } | undefined {
+	const p = panels.get(deviceId);
+	const printer = p ? fleet.get(p.printerId) : undefined;
+	return p && printer ? { printer, page: p.page } : undefined;
+}
+
+function stopPanel(deviceId: string): boolean {
+	const p = panels.get(deviceId);
+	panelSet.delete(deviceId);
+	if (!p) {
+		return false;
+	}
+	clearTimeout(p.timer);
+	panels.delete(deviceId);
+	panelEvents.emit("change");
+	return true;
+}
+
+/** Any press on the panel keeps it open a while longer. */
+function armPanel(deviceId: string, printerId: string, page: number): void {
+	clearTimeout(panels.get(deviceId)?.timer);
+	const timer = setTimeout(() => closePanel(deviceId), PANEL_MS);
+	timer.unref?.();
+	panels.set(deviceId, { printerId, page, timer });
+	panelEvents.emit("change");
+}
+
+export function setPanelPage(deviceId: string, page: number): void {
+	const p = panels.get(deviceId);
+	if (p) {
+		armPanel(deviceId, p.printerId, Math.max(0, page));
+	}
+}
+
+export function touchPanel(deviceId: string): void {
+	const p = panels.get(deviceId);
+	if (p) {
+		armPanel(deviceId, p.printerId, p.page);
+	}
+}
+
+/** Shows all controls of the printer on the whole deck. */
+export function openPanel(device: DeviceLike, printer: Printer): boolean {
+	if (!ALERT_PROFILE[device.type as number] || alerting.has(device.id)) {
+		return false;
+	}
+	armPanel(device.id, printer.config.id, 0);
+	if (guiding.delete(device.id) || stopViewing(device.id) || showing(device.id)) {
+		panelSet.add(device.id);
+		return true;
+	}
+	void switchToFullDeck(device, panelSet, "panel");
+	return true;
+}
+
+export function closePanel(deviceId: string): void {
+	const switched = panelSet.has(deviceId);
+	stopPanel(deviceId);
+	if (switched) {
+		panelSet.add(deviceId);
+		void switchBack(panelSet, [deviceId]);
 	}
 }

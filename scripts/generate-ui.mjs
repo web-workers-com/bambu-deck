@@ -117,6 +117,11 @@ const pages = {
 		setupHint,
 	].join("\n"),
 	"control.html": [printerSelect, setupHint].join("\n"),
+	"controls.html": [
+		printerSelect,
+		`<div class="hint">Drücken legt alle Steuerungen über das ganze Deck: Pause, Stopp (halten), Licht, Tempo, Vorheizen, Lüfter, Achsen, Filament laden und entladen. Was dein Drucker nicht hat, fehlt. Auf kleinen Decks blätterst du mit „Weiter“, „Fertig“ führt zurück.</div>`,
+		setupHint,
+	].join("\n"),
 	"preheat.html": [
 		printerSelect,
 		select("Vorgabe", "preset", [["pla", "PLA · 220° / 60°"], ["petg", "PETG · 250° / 75°"], ["abs", "ABS/ASA · 260° / 100°"], ["tpu", "TPU · 230° / 40°"], ["cool", "Abkühlen (alles aus)"]], "Heizt nur, wenn gerade nicht gedruckt wird. Noch ein Druck, während die Vorgabe heizt, schaltet wieder aus."),

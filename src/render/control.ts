@@ -71,11 +71,11 @@ export function jobKey(s: Status, view: InfoView, now = new Date()): string {
 	if (busy) {
 		inner += ring(s.stage === "paused" ? C.honey : C.print, s.percent / 100, s.stage === "paused" ? "#3A321E" : C.printDim);
 	}
-	const label = { eta: "fertig um", remaining: "Restzeit", layer: "Schicht", job: "Druck" }[view];
+	const label = busy ? { eta: "fertig um", remaining: "Restzeit", layer: "Schicht", job: "Druck" }[view] : "Druckinfo";
 	inner += text(label, { x: 60, y: 30, size: 12, max: 96, fill: C.label, face: "body" });
 	if (!busy) {
-		const word = s.stage === "finished" ? "fertig" : s.stage === "failed" ? "Fehler" : s.stage === "offline" ? "offline" : "bereit";
-		inner += text(word, { x: 60, y: 70, size: 20, max: 96, fill: C.greyLight });
+		const word = s.stage === "finished" ? "fertig" : s.stage === "failed" ? "Fehler" : s.stage === "offline" ? "offline" : "kein Druck";
+		inner += text(word, { x: 60, y: 70, size: 18, max: 96, fill: C.greyLight });
 		if (s.job && (s.stage === "finished" || s.stage === "failed")) {
 			inner += text(s.job, { x: 60, y: 96, size: 11, max: 96, fill: C.grey, face: "body" });
 		}

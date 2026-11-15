@@ -8,11 +8,11 @@ import { PRESETS, type Fan } from "../bambu/commands.js";
 import type { Printer } from "../bambu/connection.js";
 import { findTray, type Status } from "../bambu/report.js";
 import { fanKey, filamentKey, gcodeKey, INFO_VIEWS, jobKey, moveKey, preheatKey, type InfoView, type MoveWhat } from "../render/control.js";
-import { send } from "../runtime.js";
+import { idle } from "../panel.js";
+import { controlsKey } from "../render/panel.js";
+import { openPanel, send } from "../runtime.js";
 import { PrinterAction, type PrinterSettings } from "./base.js";
 
-/** Not printing, and connected: safe to heat, move or swap filament. */
-export const idle = (s: Status) => !["printing", "heating", "paused", "offline"].includes(s.stage);
 
 type PreheatSettings = PrinterSettings & { preset?: string };
 
@@ -30,7 +30,6 @@ export class PreheatAction extends PrinterAction<PreheatSettings> {
 	protected override async press(printer: Printer, s: PreheatSettings, key: KeyAction<PreheatSettings>): Promise<void> {
 		const st = printer.status;
 		if (!idle(st)) {
-			await key.showAlert();
 			return;
 		}
 		const p = PRESETS[s.preset ?? "pla"] ?? PRESETS.pla!;
@@ -63,7 +62,6 @@ export class FanAction extends PrinterAction<FanSettings> {
 	protected override async press(printer: Printer, s: FanSettings, key: KeyAction<FanSettings>): Promise<void> {
 		const which = s.which ?? "part";
 		if (printer.status.stage === "offline" || (printer.model.family === "A1" && which !== "part")) {
-			await key.showAlert();
 			return;
 		}
 		const now = this.#percent(printer.status, which);
@@ -106,7 +104,6 @@ export class MoveAction extends PrinterAction<MoveSettings> {
 
 	protected override async press(printer: Printer, s: MoveSettings, key: KeyAction<MoveSettings>): Promise<void> {
 		if (!idle(printer.status)) {
-			await key.showAlert();
 			return;
 		}
 		const what = s.what ?? "home";
@@ -131,7 +128,6 @@ export class FilamentAction extends PrinterAction<FilamentSettings> {
 	protected override async press(printer: Printer, s: FilamentSettings, key: KeyAction<FilamentSettings>): Promise<void> {
 		const st = printer.status;
 		if (!idle(st)) {
-			await key.showAlert();
 			return;
 		}
 		if ((s.mode ?? "unload") === "unload") {
@@ -141,7 +137,6 @@ export class FilamentAction extends PrinterAction<FilamentSettings> {
 		}
 		const tray = findTray(st, s.slot || "A1");
 		if (!tray?.loaded) {
-			await key.showAlert();
 			return;
 		}
 		await send(printer, { kind: "load", slot: tray.slot, amsId: tray.amsId, trayIndex: tray.trayIndex, temp: tray.temp ?? 220 }, key);
@@ -164,9 +159,26 @@ export class GcodeAction extends PrinterAction<GcodeSettings> {
 		const lines = s.gcode?.trim();
 		const allowed = s.whilePrinting ? printer.status.stage !== "offline" : idle(printer.status);
 		if (!lines || !allowed) {
-			await key.showAlert();
 			return;
 		}
 		await send(printer, { kind: "gcode", lines }, key);
+	}
+}
+
+/** Steuern: all controls of the printer on the whole deck. */
+@action({ UUID: "com.bambudeck.plugin.controls" })
+export class ControlsAction extends PrinterAction {
+	constructor() {
+		super(1);
+	}
+
+	protected paint(printer: Printer): string {
+		return controlsKey(printer.config.name);
+	}
+
+	protected override async press(printer: Printer, _s: PrinterSettings, key: KeyAction<PrinterSettings>): Promise<void> {
+		if (!openPanel(key.device, printer)) {
+			await key.showAlert();
+		}
 	}
 }

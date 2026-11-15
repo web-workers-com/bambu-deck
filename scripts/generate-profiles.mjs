@@ -30,7 +30,6 @@ function key(uuid, name, settings = {}) {
 const BAO = key("printer", "Bao (Drucker)");
 const P2 = key("printer", "Bao (Drucker)", { printer: "2", look: "compact" });
 const P3 = key("printer", "Bao (Drucker)", { printer: "3", look: "compact" });
-const P4 = key("printer", "Bao (Drucker)", { printer: "4", look: "compact" });
 const tray = (slot) => key("tray", "AMS-Spule", { slot });
 const TEMPS = key("temp", "Temperaturen", { what: "both" });
 const NOZZLE = key("temp", "Temperaturen", { what: "nozzle" });
@@ -45,6 +44,7 @@ const TEST = key("test", "Alarm testen", { level: "done" });
 const TEST_ERROR = key("test", "Alarm testen", { level: "error" });
 const ALERT = key("alert", "Alarm-Taste");
 const CAMERA = key("camera", "Kamera");
+const CONTROLS = key("controls", "Steuern");
 const PREHEAT = key("preheat", "Vorheizen", { preset: "pla" });
 const COOL = key("preheat", "Vorheizen", { preset: "cool" });
 const FAN = key("fan", "Lüfter", { which: "part" });
@@ -66,30 +66,30 @@ function grid(rows) {
 const MK2 = [
 	[BAO, TEMPS, HUMIDITY, LIGHT, SPEED],
 	[tray("A1"), tray("A2"), tray("A3"), tray("A4"), tray("active")],
-	[PAUSE, CAMERA, BED, TEST, STOP],
+	[PAUSE, CAMERA, CONTROLS, TEST, STOP],
 ];
 const XL = [
-	[BAO, P2, P3, P4, TEMPS, HUMIDITY, LIGHT, SPEED],
+	[BAO, P2, P3, CONTROLS, TEMPS, HUMIDITY, LIGHT, SPEED],
 	[tray("A1"), tray("A2"), tray("A3"), tray("A4"), tray("B1"), tray("B2"), tray("B3"), tray("B4")],
 	[tray("active"), tray("Ext"), tray("HT1"), CAMERA, NOZZLE, BED, CHAMBER, INFO],
 	[PAUSE, PREHEAT, COOL, TEST, FAN, HOME, UNLOAD, STOP],
 ];
 const SMALL = [
 	[BAO, tray("A1"), tray("A2"), PAUSE],
-	[TEMPS, tray("A3"), tray("A4"), STOP],
+	[CONTROLS, tray("A3"), tray("A4"), STOP],
 ];
 
 /** Device type → model id, grid, and starter layout. */
 const DEVICES = [
 	{ suffix: "", type: 0, model: "20GBA9901", size: [5, 3], layout: MK2 },
-	{ suffix: " Mini", type: 1, model: "20GAI9901", size: [3, 2], layout: [[BAO, tray("active"), PAUSE], [TEMPS, LIGHT, STOP]] },
+	{ suffix: " Mini", type: 1, model: "20GAI9901", size: [3, 2], layout: [[BAO, tray("active"), PAUSE], [TEMPS, CONTROLS, STOP]] },
 	{ suffix: " XL", type: 2, model: "20GAT9901", size: [8, 4], layout: XL },
 	{ suffix: " Mobile", type: 3, model: "VSD/WiFi", size: [5, 3], layout: MK2 },
 	{ suffix: " Plus", type: 7, model: "20GBD9901", size: [4, 2], layout: SMALL, dials: DIALS },
 	{ suffix: " Neo", type: 9, model: "20GBJ9901", size: [4, 2], layout: SMALL },
 	{ suffix: " Studio", type: 10, model: "20GBO9901", size: [16, 2], layout: [[...XL[0], ...XL[1]], [...XL[2], ...XL[3]]], dials: [dial("nozzle"), dial("bed")] },
 	{ suffix: " Virtual", type: 11, model: "UI Stream Deck", size: [8, 8], layout: XL },
-	{ suffix: " Galleon", type: 12, model: "GRETSCH", size: [3, 4], layout: [[BAO, TEMPS, LIGHT], [tray("A1"), tray("A2"), tray("A3")], [tray("A4"), tray("active"), HUMIDITY], [PAUSE, CAMERA, STOP]], dials: [dial("nozzle"), dial("bed")] },
+	{ suffix: " Galleon", type: 12, model: "GRETSCH", size: [3, 4], layout: [[BAO, TEMPS, LIGHT], [tray("A1"), tray("A2"), tray("A3")], [tray("A4"), tray("active"), HUMIDITY], [CONTROLS, CAMERA, STOP]], dials: [dial("nozzle"), dial("bed")] },
 	{ suffix: " Plus XL", type: 13, model: "20GBX9901", size: [9, 4], layout: XL.map((row, i) => [...row, [CHAMBER, tray("C1"), tray("C2"), null][i]]), dials: [...DIALS, dial("fan"), dial("speed")].slice(0, 6) },
 ];
 

@@ -11,6 +11,7 @@ import { toStatus } from "../.build/bambu/report.js";
 import { humidityKey, lightKey, pauseKey, printerKey, speedKey, stopKey, tempKey, testKey, trayKey } from "../.build/render/keys.js";
 import { panda } from "../.build/render/panda.js";
 import { cameraKey } from "../.build/render/camera.js";
+import { controlsKey } from "../.build/render/panel.js";
 import { fanKey, filamentKey, gcodeKey, jobKey, moveKey, preheatKey } from "../.build/render/control.js";
 import { DEFS } from "../.build/render/svg.js";
 
@@ -72,6 +73,7 @@ const keys = {
 	dial: tempKey(sample, "nozzle"),
 	test: testKey("done"),
 	camera: cameraKey("X1C"),
+	controls: controlsKey("X1C"),
 	preheat: preheatKey("PLA", 220, 60, undefined, true),
 	fan: fanKey("part", 60, 0.2),
 	info: jobKey(sample, "eta", new Date(2026, 10, 15, 13, 20)),
