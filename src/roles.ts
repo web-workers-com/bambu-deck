@@ -5,17 +5,19 @@
  */
 import type { Alert } from "./alerts.js";
 
-export type Answer = "done" | "snooze" | "back" | "resume" | "pause" | "stop";
-export type Role = Answer | "picture";
+/** "info" is the speech bubble: printer and what happened. Pressing it leads back. */
+export type Answer = "info" | "done" | "snooze" | "back" | "resume" | "pause" | "stop";
+/** "blank": a spare key in the answer column; pressing it leads back too. */
+export type Role = Answer | "picture" | "blank";
 
 export function answersFor(kind: Alert["kind"] | undefined): Answer[] {
 	switch (kind) {
 		case "paused":
-			return ["resume", "stop", "snooze"];
+			return ["info", "resume", "stop", "snooze"];
 		case "hms":
-			return ["pause", "stop", "done"];
+			return ["info", "pause", "stop", "done"];
 		default:
-			return ["done", "snooze"];
+			return ["info", "done", "snooze"];
 	}
 }
 
@@ -31,7 +33,7 @@ export function roleAt(columns: number, rows: number, column: number, row: numbe
 		return "picture";
 	}
 	const index = (last - column) * rows + row;
-	return answers[index] ?? "back";
+	return answers[index] ?? (index === answers.length ? "back" : "blank");
 }
 
 /** Width of the picture in keys. */
