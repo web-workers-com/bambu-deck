@@ -10,6 +10,7 @@ import { findTray, type Status } from "../bambu/report.js";
 import { fanKey, filamentKey, gcodeKey, INFO_VIEWS, jobKey, moveKey, preheatKey, type InfoView, type MoveWhat } from "../render/control.js";
 import { idle } from "../panel.js";
 import { controlsKey } from "../render/panel.js";
+import { shapeOf } from "../render/printer.js";
 import { openPanel, send } from "../runtime.js";
 import { PrinterAction, type PrinterSettings } from "./base.js";
 
@@ -81,7 +82,7 @@ export class InfoAction extends PrinterAction<InfoSettings> {
 	}
 
 	protected paint(printer: Printer, s: InfoSettings, _t: number, key: KeyAction<InfoSettings>): string {
-		return jobKey(printer.status, this.#views.get(key.id) ?? s.view ?? "eta");
+		return jobKey(printer.status, this.#views.get(key.id) ?? s.view ?? "eta", new Date(), shapeOf(printer.model.family));
 	}
 
 	protected override press(_printer: Printer, s: InfoSettings, key: KeyAction<InfoSettings>): void {
@@ -173,7 +174,7 @@ export class ControlsAction extends PrinterAction {
 	}
 
 	protected paint(printer: Printer): string {
-		return controlsKey(printer.config.name);
+		return controlsKey(printer.config.name, shapeOf(printer.model.family));
 	}
 
 	protected override async press(printer: Printer, _s: PrinterSettings, key: KeyAction<PrinterSettings>): Promise<void> {

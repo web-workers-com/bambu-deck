@@ -6,6 +6,7 @@ import type { Alert } from "../alerts.js";
 import { SPEED_NAMES } from "../bambu/commands.js";
 import type { AmsUnit, Stage, Status, Tray } from "../bambu/report.js";
 import { heat, nozzle, panda } from "./panda.js";
+import { BAMBOO } from "./printer.js";
 import { BG, C, hm, keyImage, q, ring, swing, text } from "./svg.js";
 
 export type View = "percent" | "time" | "layer";
@@ -305,7 +306,7 @@ export function tempKey(s: Status, what: TempWhat): string {
 
 /** Pause or resume, depending on what the printer does. */
 export function pauseKey(stage: Stage): string {
-	let inner = BG;
+	let inner = BG + BAMBOO;
 	if (stage === "paused") {
 		inner += `<path d="M48 30 v38 l32 -19z" fill="${C.bamboo}"/>`;
 		inner += text("Weiter", { x: 60, y: 100, size: 17, max: 96, fill: C.bambooLight });
@@ -319,7 +320,7 @@ export function pauseKey(stage: Stage): string {
 
 /** Stop, which needs holding: `hold` runs 0..1 while the key is held. */
 export function stopKey(hold: number, enabled: boolean): string {
-	let inner = BG;
+	let inner = BG + BAMBOO;
 	inner += ring(enabled ? C.coral : "#4A4F57", hold, enabled ? C.coralDim : undefined);
 	inner += `<rect x="44" y="30" width="32" height="32" rx="7" fill="${enabled ? C.coral : "#4A4F57"}"/>`;
 	inner += text(hold > 0 ? "weiter halten" : "Stopp", { x: 60, y: 98, size: hold > 0 ? 13 : 17, max: 100, fill: enabled ? C.coralLight : C.grey });
@@ -327,7 +328,7 @@ export function stopKey(hold: number, enabled: boolean): string {
 }
 
 export function lightKey(on: boolean | undefined, supported: boolean): string {
-	let inner = BG;
+	let inner = BG + BAMBOO;
 	if (!supported) {
 		inner += `<path d="M60 30 a15 15 0 0 1 9 27 v6 h-18 v-6 a15 15 0 0 1 9 -27z" fill="none" stroke="#4A4F57" stroke-width="2.6"/>`;
 		inner += text("kein Licht", { x: 60, y: 102, size: 14, max: 100, fill: C.grey });
@@ -347,7 +348,7 @@ export function speedKey(level: number): string {
 	const x = 60 + Math.cos(angle) * 26;
 	const y = 70 - Math.sin(angle) * 26;
 	const color = level >= 4 ? C.coral : level === 3 ? C.print : level === 1 ? C.bamboo : C.greyLight;
-	let inner = BG;
+	let inner = BG + BAMBOO;
 	inner += `<path d="M32 70 a28 28 0 0 1 56 0" stroke="${C.track}" stroke-width="7" fill="none" stroke-linecap="round"/>`;
 	inner += `<path d="M32 70 A28 28 0 0 1 ${(60 + Math.cos(angle) * 28).toFixed(1)} ${(70 - Math.sin(angle) * 28).toFixed(1)}" stroke="${color}" stroke-width="7" fill="none" stroke-linecap="round"/>`;
 	inner += `<path d="M60 70 L${x.toFixed(1)} ${y.toFixed(1)}" stroke="${C.text}" stroke-width="3.4" stroke-linecap="round"/><circle cx="60" cy="70" r="4.5" fill="${C.text}"/>`;

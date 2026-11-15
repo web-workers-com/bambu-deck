@@ -1,22 +1,11 @@
 /** Keys of the setup guide: one item per key, text never crosses a key edge. */
 import { familyInfo, stepsFor, type FamilyInfo, type GuideItem, type StepIcon } from "../setup.js";
 import { panda } from "./panda.js";
+import { printerOutline } from "./printer.js";
 import { BG, C, keyImage, swing, text } from "./svg.js";
 
-/** A printer outline in the family's shape, centred on (60, cy). */
 function printerShape(shape: FamilyInfo["shape"], cy: number, color: string): string {
-	const s = `stroke="${color}" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"`;
-	if (shape === "open") {
-		// Bed slinger: an arm on one side, the bed in front.
-		return `<path d="M40 ${cy + 16} v-34 h34 M70 ${cy - 18} v12 M66 ${cy - 6} h8 v5 h-8z" ${s}/><path d="M38 ${cy + 16} h46 M50 ${cy + 8} h32" ${s}/>`;
-	}
-	const w = shape === "wide" ? 52 : 40;
-	const x = 60 - w / 2;
-	return (
-		`<rect x="${x}" y="${cy - 18}" width="${w}" height="36" rx="5" ${s}/>` +
-		`<rect x="${x + 6}" y="${cy - 12}" width="${w - 12}" height="20" rx="2" fill="${color}" fill-opacity="0.18" stroke="none"/>` +
-		`<path d="M${x + 6} ${cy + 13} h${w - 12}" ${s}/>`
-	);
+	return printerOutline(shape, 60, cy, color);
 }
 
 const ICON: Record<StepIcon, (color: string) => string> = {

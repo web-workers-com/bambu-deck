@@ -6,6 +6,7 @@ import { fanPercent, idle, type PanelItem } from "../panel.js";
 import { fanKey, filamentKey, moveKey, preheatKey } from "./control.js";
 import { guideKey } from "./guide.js";
 import { lightKey, pauseKey, speedKey, stopKey } from "./keys.js";
+import { BAMBOO, printerOutline, type Shape } from "./printer.js";
 import { BG, C, keyImage, text } from "./svg.js";
 
 export function panelKey(item: PanelItem, model: Pick<Model, "light">, s: Status, t: number, hold = 0): string {
@@ -49,14 +50,14 @@ export function panelKey(item: PanelItem, model: Pick<Model, "light">, s: Status
 	}
 }
 
-/** The key that opens the panel. */
-export function controlsKey(name: string): string {
-	let m = BG;
-	// Three sliders.
-	for (const [y, x] of [[32, 70], [50, 48], [68, 62]] as const) {
-		m += `<path d="M34 ${y} h52" stroke="${C.track}" stroke-width="4" stroke-linecap="round"/><path d="M34 ${y} h${x - 34}" stroke="${C.bamboo}" stroke-width="4" stroke-linecap="round"/><circle cx="${x}" cy="${y}" r="6" fill="${C.bambooLight}"/>`;
+/** The key that opens the panel: the printer's outline with two small sliders. */
+export function controlsKey(name: string, shape: Shape = "box"): string {
+	let m = BG + BAMBOO;
+	m += printerOutline(shape, 60, 44, C.bambooLight, 0.95);
+	for (const [y, x] of [[74, 70], [82, 50]] as const) {
+		m += `<path d="M40 ${y} h40" stroke="${C.track}" stroke-width="3" stroke-linecap="round"/><path d="M40 ${y} h${x - 40}" stroke="${C.bamboo}" stroke-width="3" stroke-linecap="round"/><circle cx="${x}" cy="${y}" r="3.6" fill="${C.bambooLight}"/>`;
 	}
-	m += text("Steuern", { x: 60, y: 96, size: 16, max: 100, fill: C.text, weight: 700 });
-	m += text(name, { x: 60, y: 112, size: 11, max: 100, fill: C.label, face: "body" });
+	m += text("Steuern", { x: 60, y: 103, size: 15, max: 100, fill: C.text, weight: 700 });
+	m += text(name, { x: 60, y: 116, size: 10, max: 100, fill: C.label, face: "body" });
 	return keyImage(m);
 }
