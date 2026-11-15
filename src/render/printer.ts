@@ -1,28 +1,62 @@
 /** Printer outlines by model family and a small toolhead mark. Generic drawings, no Bambu Lab logo. */
 import type { Family } from "../bambu/models.js";
 
-export type Shape = "box" | "open" | "wide";
+/** Which drawing: X1/X2 (square, status light), P1/P2, open bed slinger (A1/A2), wide (H2/H3, two nozzles). */
+export type Shape = "x1" | "p" | "open" | "wide";
 
-/** Bed slingers are open frames, the H series is wide, the rest are closed boxes. */
 export function shapeOf(family: Family | undefined): Shape {
-	return family === "A1" || family === "A2" ? "open" : family === "H2" || family === "H3" ? "wide" : "box";
+	switch (family) {
+		case "X1":
+		case "X2":
+			return "x1";
+		case "A1":
+		case "A2":
+			return "open";
+		case "H2":
+		case "H3":
+			return "wide";
+		default:
+			return "p";
+	}
 }
 
-/** A printer outline centred on (cx, cy), `s` = size factor (1 ≈ 40 units wide). */
-export function printerOutline(shape: Shape, cx: number, cy: number, color: string, s = 1): string {
-	const st = `stroke="${color}" stroke-width="${(3 / s).toFixed(2)}" fill="none" stroke-linejoin="round" stroke-linecap="round"`;
+const BODY = "#4A4F57";
+const EDGE = "#60666F";
+const WINDOW = "#5B7489";
+const BASE = "#17191C";
+
+/**
+ * The printer drawings from the design canvas, recoloured for dark keys.
+ * Drawn in a 160 × 96 box, centred on (cx, cy) at scale `s`. `accent` lights
+ * the status light and tints the window (green = done, blue = printing).
+ */
+export function printerOutline(shape: Shape, cx: number, cy: number, accent: string, s = 0.5): string {
 	let m: string;
-	if (shape === "open") {
-		// Bed slinger: an arm on one side, the bed in front.
-		m = `<path d="M-20 16 v-34 h34 M10 -18 v12 M6 -6 h8 v5 h-8z" ${st}/><path d="M-22 16 h46 M-10 8 h32" ${st}/>`;
-	} else {
-		const w = shape === "wide" ? 52 : 40;
-		m =
-			`<rect x="${-w / 2}" y="-18" width="${w}" height="36" rx="5" ${st}/>` +
-			`<rect x="${-w / 2 + 6}" y="-12" width="${w - 12}" height="20" rx="2" fill="${color}" fill-opacity="0.18" stroke="none"/>` +
-			`<path d="M${-w / 2 + 6} 13 h${w - 12}" ${st}/>`;
+	const body = (x: number, y: number, w: number, h: number, r: number) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${BODY}" stroke="${EDGE}" stroke-width="1.5"/>`;
+	const pane = (x: number, y: number, w: number, h: number, r: number) =>
+		`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${WINDOW}" opacity="0.6"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${accent}" opacity="0.14"/>`;
+	switch (shape) {
+		case "x1":
+			m = body(38, 8, 84, 84, 8) + pane(46, 16, 68, 60, 4) + `<rect x="46" y="80" width="68" height="6" rx="2" fill="${BASE}"/><circle cx="108" cy="83" r="2.4" fill="${accent}"/>`;
+			break;
+		case "open":
+			m =
+				`<path d="M42 88 h76" stroke="${BODY}" stroke-width="7" stroke-linecap="round"/>` +
+				`<path d="M112 88 v-76 M112 18 h-60" stroke="${EDGE}" stroke-width="7" stroke-linecap="round" fill="none"/>` +
+				`<rect x="58" y="18" width="16" height="16" rx="3" fill="#8C9198"/><path d="M63 34 h6 l-2 5 h-2z" fill="#C9A24A"/>` +
+				`<rect x="48" y="74" width="56" height="6" rx="2" fill="${accent}" opacity="0.85"/>`;
+			break;
+		case "wide":
+			m =
+				body(28, 8, 104, 84, 9) +
+				pane(36, 16, 88, 62, 4) +
+				`<rect x="70" y="20" width="9" height="10" rx="2" fill="#C9CDD3"/><rect x="81" y="20" width="9" height="10" rx="2" fill="#C9CDD3"/>` +
+				`<rect x="36" y="82" width="88" height="5" rx="2" fill="${BASE}"/><circle cx="118" cy="84.5" r="2.2" fill="${accent}"/>`;
+			break;
+		default:
+			m = body(40, 12, 80, 80, 8) + pane(48, 20, 64, 58, 4) + `<rect x="48" y="82" width="64" height="5" rx="2" fill="${BASE}"/>`;
 	}
-	return `<g transform="translate(${cx} ${cy}) scale(${s})">${m}</g>`;
+	return `<g transform="translate(${(cx - 80 * s).toFixed(1)} ${(cy - 48 * s).toFixed(1)}) scale(${s})">${m}</g>`;
 }
 
 /**

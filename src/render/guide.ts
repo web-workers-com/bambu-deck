@@ -5,7 +5,7 @@ import { printerOutline } from "./printer.js";
 import { BG, C, keyImage, swing, text } from "./svg.js";
 
 function printerShape(shape: FamilyInfo["shape"], cy: number, color: string): string {
-	return printerOutline(shape, 60, cy, color);
+	return printerOutline(shape, 60, cy, color, 0.52);
 }
 
 const ICON: Record<StepIcon, (color: string) => string> = {

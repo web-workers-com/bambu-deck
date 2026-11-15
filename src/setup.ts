@@ -15,7 +15,7 @@ export type FamilyInfo = {
 	/** Where IP address and access code are on the printer's screen. */
 	menu: string;
 	/** Drawing on the key: closed box, open frame (bed slinger), wide box. */
-	shape: "box" | "open" | "wide";
+	shape: "x1" | "p" | "open" | "wide";
 };
 
 /**
@@ -24,10 +24,10 @@ export type FamilyInfo = {
  * and H3C the menus are assumed from their siblings, not checked.
  */
 export const FAMILIES: FamilyInfo[] = [
-	{ id: "X1", name: "X1", models: "X1C · X1 · X1E", menu: "Netzwerk", shape: "box" },
-	{ id: "X2", name: "X2D", models: "X2D", menu: "Netzwerk", shape: "box" },
-	{ id: "P1", name: "P1", models: "P1S · P1P", menu: "WLAN", shape: "box" },
-	{ id: "P2", name: "P2S", models: "P2S", menu: "Netzwerk", shape: "box" },
+	{ id: "X1", name: "X1", models: "X1C · X1 · X1E", menu: "Netzwerk", shape: "x1" },
+	{ id: "X2", name: "X2D", models: "X2D", menu: "Netzwerk", shape: "x1" },
+	{ id: "P1", name: "P1", models: "P1S · P1P", menu: "WLAN", shape: "p" },
+	{ id: "P2", name: "P2S", models: "P2S", menu: "Netzwerk", shape: "p" },
 	{ id: "A1", name: "A1", models: "A1 · A1 mini", menu: "WLAN", shape: "open" },
 	{ id: "A2", name: "A2L", models: "A2L", menu: "WLAN", shape: "open" },
 	{ id: "H2", name: "H2", models: "H2D · H2S · H2C", menu: "Netzwerk", shape: "wide" },

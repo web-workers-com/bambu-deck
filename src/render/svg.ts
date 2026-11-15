@@ -84,6 +84,7 @@ export function text(value: string, o: TextOptions): string {
 export const DEFS =
 	`<radialGradient id="bdKey" cx="0.5" cy="0.3" r="0.85"><stop offset="0" stop-color="#2C3035"/><stop offset="1" stop-color="#121417"/></radialGradient>` +
 	`<radialGradient id="bdFur" cx="0.5" cy="0.35" r="0.7"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E4DFD3"/></radialGradient>` +
+	`<linearGradient id="bdShell" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A4F57"/><stop offset="1" stop-color="#2A2D31"/></linearGradient>` +
 	`<linearGradient id="bdBamboo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9BCB62"/><stop offset="1" stop-color="#5E9A36"/></linearGradient>` +
 	`<radialGradient id="bdGlowGreen" cx="0.35" cy="0.45" r="0.8"><stop offset="0" stop-color="#36502A"/><stop offset="1" stop-color="#121417"/></radialGradient>` +
 	`<radialGradient id="bdGlowCoral" cx="0.35" cy="0.45" r="0.8"><stop offset="0" stop-color="#5A2A25"/><stop offset="1" stop-color="#121417"/></radialGradient>` +

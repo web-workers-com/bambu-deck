@@ -4,6 +4,7 @@ import { action, type KeyAction } from "@elgato/streamdeck";
 import type { Printer } from "../bambu/connection.js";
 import { findTray } from "../bambu/report.js";
 import { humidityKey, noActiveTrayKey, printerKey, tempKey, trayKey, type TempWhat, type View } from "../render/keys.js";
+import { amsUnitKey } from "../render/ams.js";
 import { center } from "../runtime.js";
 import { PrinterAction, type PrinterSettings } from "./base.js";
 
@@ -78,5 +79,20 @@ export class TempAction extends PrinterAction<TempSettings> {
 
 	protected paint(printer: Printer, s: TempSettings): string {
 		return tempKey(printer.status, s.what ?? "both");
+	}
+}
+
+type AmsSettings = PrinterSettings & { unit?: string };
+
+/** The whole AMS unit with its spools, live. */
+@action({ UUID: "com.bambudeck.plugin.ams" })
+export class AmsAction extends PrinterAction<AmsSettings> {
+	constructor() {
+		super(5);
+	}
+
+	protected paint(printer: Printer, s: AmsSettings, t: number): string {
+		const label = (s.unit || "A").toUpperCase();
+		return amsUnitKey(printer.status.ams.find((u) => u.label === label), printer.status.stage, t, label);
 	}
 }

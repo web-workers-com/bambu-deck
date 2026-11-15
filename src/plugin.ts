@@ -4,7 +4,7 @@ import { AlertAction, TestAction } from "./actions/alert-keys.js";
 import { CameraAction } from "./actions/camera-keys.js";
 import { ControlsAction, FanAction, FilamentAction, GcodeAction, InfoAction, MoveAction, PreheatAction } from "./actions/more-keys.js";
 import { DialActionImpl, LightAction, PauseAction, SpeedAction, StopAction } from "./actions/control-keys.js";
-import { BaoAction, HumidityAction, TempAction, TrayAction } from "./actions/printer-keys.js";
+import { AmsAction, BaoAction, HumidityAction, TempAction, TrayAction } from "./actions/printer-keys.js";
 import { fleet, loadSettings } from "./runtime.js";
 
 streamDeck.logger.setLevel("info");
@@ -21,6 +21,7 @@ for (const a of [
 	new BaoAction(),
 	new TrayAction(),
 	new HumidityAction(),
+	new AmsAction(),
 	new TempAction(),
 	new PauseAction(),
 	new StopAction(),

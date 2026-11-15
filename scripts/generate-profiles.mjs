@@ -35,6 +35,7 @@ const NOZZLE = key("temp", "Temperaturen", { what: "nozzle" });
 const BED = key("temp", "Temperaturen", { what: "bed" });
 const CHAMBER = key("temp", "Temperaturen", { what: "chamber" });
 const HUMIDITY = key("humidity", "AMS-Feuchte", { unit: "A" });
+const AMS_UNIT = key("ams", "AMS-Gerät", { unit: "A" });
 const PAUSE = key("pause", "Pause / Weiter");
 const STOP = key("stop", "Stopp (halten)");
 const LIGHT = key("light", "Kammerlicht");
@@ -65,15 +66,15 @@ function grid(rows) {
  * slots stay calm. Everything else is one press away under "Steuern".
  */
 const MK2 = [
-	[BAO, info("eta"), TEMPS, HUMIDITY, CAMERA],
+	[BAO, info("eta"), TEMPS, AMS_UNIT, CAMERA],
 	[...AMS, tray("active")],
 	[CONTROLS, preheat("pla"), LIGHT, SPEED, PAUSE],
 ];
 const XL = [
-	[BAO, info("eta"), NOZZLE, BED, CHAMBER, HUMIDITY, CAMERA, CONTROLS],
+	[BAO, info("eta"), NOZZLE, BED, CHAMBER, AMS_UNIT, CAMERA, CONTROLS],
 	[...AMS, tray("active"), tray("Ext"), preheat("pla"), preheat("petg")],
 	[LIGHT, SPEED, fan("part"), fan("aux"), fan("chamber"), move("home"), UNLOAD, preheat("cool")],
-	[PAUSE, info("layer"), info("remaining"), null, null, null, TEST, STOP],
+	[PAUSE, info("layer"), info("remaining"), HUMIDITY, null, null, TEST, STOP],
 ];
 const SMALL = [
 	[BAO, info("eta"), CAMERA, CONTROLS],

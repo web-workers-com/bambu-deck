@@ -122,6 +122,11 @@ const pages = {
 		select("AMS", "unit", [["A", "AMS A"], ["B", "AMS B"], ["C", "AMS C"], ["D", "AMS D"], ["HT1", "AMS HT 1"], ["HT2", "AMS HT 2"]], "AMS 2 Pro und AMS HT zeigen Prozent und beim Trocknen die Restzeit, das klassische AMS eine Stufe. Das AMS lite hat keinen Sensor."),
 		setupHint,
 	].join("\n"),
+	"ams.html": [
+		printerSelect,
+		select("AMS", "unit", [["A", "AMS A"], ["B", "AMS B"], ["C", "AMS C"], ["D", "AMS D"], ["HT1", "AMS HT 1"], ["HT2", "AMS HT 2"]], "Zeigt das AMS mit allen Spulen in ihren Farben. Die Spule im Druck dreht sich, beim Trocknen steigt Wärme auf, unten stehen Feuchte oder Restzeit."),
+		setupHint,
+	].join("\n"),
 	"temp.html": [
 		printerSelect,
 		select("Zeigt", "what", [["both", "Düse und Bett"], ["nozzle", "Düse"], ["bed", "Bett"], ["chamber", "Kammer"]]),

@@ -51,9 +51,9 @@ export function panelKey(item: PanelItem, model: Pick<Model, "light">, s: Status
 }
 
 /** The key that opens the panel: the printer's outline with two small sliders. */
-export function controlsKey(name: string, shape: Shape = "box"): string {
+export function controlsKey(name: string, shape: Shape = "p"): string {
 	let m = BG + TOOLHEAD;
-	m += printerOutline(shape, 60, 44, C.bambooLight, 0.95);
+	m += printerOutline(shape, 60, 44, C.bamboo, 0.5);
 	for (const [y, x] of [[74, 70], [82, 50]] as const) {
 		m += `<path d="M40 ${y} h40" stroke="${C.track}" stroke-width="3" stroke-linecap="round"/><path d="M40 ${y} h${x - 40}" stroke="${C.bamboo}" stroke-width="3" stroke-linecap="round"/><circle cx="${x}" cy="${y}" r="3.6" fill="${C.bambooLight}"/>`;
 	}

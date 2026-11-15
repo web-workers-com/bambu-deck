@@ -66,7 +66,7 @@ function twoLines(name: string, max = 12): [string, string] {
 }
 
 /** Job info: when it will be done, time left, layer, or the file name. */
-export function jobKey(s: Status, view: InfoView, now = new Date(), shape: Shape = "box"): string {
+export function jobKey(s: Status, view: InfoView, now = new Date(), shape: Shape = "p"): string {
 	let inner = BG;
 	const busy = s.stage === "printing" || s.stage === "paused" || s.stage === "heating";
 	if (busy) {
@@ -76,7 +76,7 @@ export function jobKey(s: Status, view: InfoView, now = new Date(), shape: Shape
 	inner += text(label, { x: 60, y: 30, size: 12, max: 96, fill: C.label, face: "body" });
 	if (!busy) {
 		const word = s.stage === "finished" ? "fertig" : s.stage === "failed" ? "Fehler" : s.stage === "offline" ? "offline" : "kein Druck";
-		inner += printerOutline(shape, 60, 60, s.stage === "finished" ? C.bambooLight : C.grey, 0.8);
+		inner += printerOutline(shape, 60, 62, s.stage === "finished" ? C.bamboo : s.stage === "failed" ? C.coral : "#8C9198", 0.46);
 		inner += text(word, { x: 60, y: 100, size: 15, max: 96, fill: C.greyLight });
 		if (s.job && (s.stage === "finished" || s.stage === "failed")) {
 			inner += text(s.job, { x: 60, y: 114, size: 10, max: 96, fill: C.grey, face: "body" });

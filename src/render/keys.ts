@@ -260,6 +260,9 @@ export function humidityKey(unit: AmsUnit | undefined, t: number, wanted = "A"):
 		inner += ring(C.glow, 1, undefined, 0.6);
 		inner += heat(46, 70, p) + heat(60, 70, (p + 0.33) % 1) + heat(74, 70, (p + 0.66) % 1);
 		inner += text(hm(unit.dryingLeft), { x: 60, y: 103, size: 17, max: 96, fill: C.glowLight, face: "mono", weight: 700 });
+		if (unit.temperature) {
+			inner += text(`${Math.round(unit.temperature)}°`, { x: 60, y: 44, size: 14, max: 60, fill: C.glowLight, face: "mono", weight: 700 });
+		}
 		return keyImage(inner);
 	}
 	if (unit.kind === "lite") {
@@ -272,7 +275,7 @@ export function humidityKey(unit: AmsUnit | undefined, t: number, wanted = "A"):
 	if (wet) {
 		inner += ring(C.honey, 1);
 	}
-	inner += `<path d="M60 38 C 70 52, 76 60, 76 68 a16 16 0 0 1 -32 0 c0 -8 6 -16 16 -30z" fill="none" stroke="${color}" stroke-width="3.4" stroke-linejoin="round"/>`;
+	inner += `<path d="M60 38 C 70 52, 76 60, 76 68 a16 16 0 0 1 -32 0 c0 -8 6 -16 16 -30z" fill="${wet ? color : "none"}" fill-opacity="${wet ? 0.9 : 0}" stroke="${color}" stroke-width="3.4" stroke-linejoin="round"/>`;
 	const value = unit.humidity !== undefined ? `${Math.round(unit.humidity)}% rH` : unit.humidityLevel !== undefined ? `Stufe ${unit.humidityLevel}` : "–";
 	inner += text(value, { x: 60, y: 104, size: 16, max: 100, fill: wet ? C.honeyLight : C.bambooLight, face: "mono", weight: 700 });
 	return keyImage(inner);

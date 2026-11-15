@@ -70,3 +70,20 @@ test("every device grid has all answers and draws every key", () => {
 		}
 	}
 });
+
+test("the AMS unit key draws every kind, drying and missing", async () => {
+	const { amsUnitKey } = await import("../.build/render/ams.js");
+	const s = toStatus({
+		gcode_state: "RUNNING", mc_percent: 10, layer_num: 2,
+		ams: { tray_now: "1", ams: [
+			{ id: "0", humidity: "3", tray: [{ id: "0", tray_type: "PLA", tray_color: "C8483AFF" }, { id: "1", tray_type: "PETG", tray_color: "F4F2ECFF" }, { id: "2" }, { id: "3", tray_type: "PLA", remain: 5, tag_uid: "AB" }] },
+			{ id: "1", humidity_raw: "22", dry_time: 200, temp: "65", tray: [{ id: "0", tray_type: "PA" }] },
+			{ id: "128", humidity_raw: "10", tray: [{ id: "0", tray_type: "PA-CF", tray_color: "3B3D42FF" }] },
+		] },
+	});
+	for (const unit of [...s.ams, undefined]) {
+		isSvg(amsUnitKey(unit, s.stage, 0.7, "C"));
+	}
+	isSvg(amsUnitKey({ ...s.ams[0], kind: "lite" }, "idle", 0));
+	assert.match(decode(amsUnitKey(undefined, "idle", 0, "C")), /AMS C/);
+});
