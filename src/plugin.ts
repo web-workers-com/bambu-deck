@@ -2,6 +2,7 @@ import streamDeck from "@elgato/streamdeck";
 
 import { AlertAction, TestAction } from "./actions/alert-keys.js";
 import { CameraAction } from "./actions/camera-keys.js";
+import { FanAction, FilamentAction, GcodeAction, InfoAction, MoveAction, PreheatAction } from "./actions/more-keys.js";
 import { DialActionImpl, LightAction, PauseAction, SpeedAction, StopAction } from "./actions/control-keys.js";
 import { BaoAction, HumidityAction, TempAction, TrayAction } from "./actions/printer-keys.js";
 import { fleet, loadSettings } from "./runtime.js";
@@ -27,6 +28,12 @@ for (const a of [
 	new SpeedAction(),
 	new DialActionImpl(),
 	new CameraAction(),
+	new PreheatAction(),
+	new FanAction(),
+	new InfoAction(),
+	new MoveAction(),
+	new FilamentAction(),
+	new GcodeAction(),
 	new AlertAction(),
 	new TestAction(),
 ]) {

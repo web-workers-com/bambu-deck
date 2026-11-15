@@ -45,6 +45,12 @@ const TEST = key("test", "Alarm testen", { level: "done" });
 const TEST_ERROR = key("test", "Alarm testen", { level: "error" });
 const ALERT = key("alert", "Alarm-Taste");
 const CAMERA = key("camera", "Kamera");
+const PREHEAT = key("preheat", "Vorheizen", { preset: "pla" });
+const COOL = key("preheat", "Vorheizen", { preset: "cool" });
+const FAN = key("fan", "Lüfter", { which: "part" });
+const INFO = key("info", "Druckinfo", { view: "eta" });
+const HOME = key("move", "Achsen", { what: "home" });
+const UNLOAD = key("filament", "Filament", { mode: "unload" });
 
 // Dials (Stream Deck +): nozzle, bed, fan, speed.
 const dial = (what) => key("dial", "Drehregler", { what });
@@ -65,8 +71,8 @@ const MK2 = [
 const XL = [
 	[BAO, P2, P3, P4, TEMPS, HUMIDITY, LIGHT, SPEED],
 	[tray("A1"), tray("A2"), tray("A3"), tray("A4"), tray("B1"), tray("B2"), tray("B3"), tray("B4")],
-	[tray("active"), tray("Ext"), tray("HT1"), CAMERA, NOZZLE, BED, CHAMBER, null],
-	[PAUSE, null, null, TEST, TEST_ERROR, null, null, STOP],
+	[tray("active"), tray("Ext"), tray("HT1"), CAMERA, NOZZLE, BED, CHAMBER, INFO],
+	[PAUSE, PREHEAT, COOL, TEST, FAN, HOME, UNLOAD, STOP],
 ];
 const SMALL = [
 	[BAO, tray("A1"), tray("A2"), PAUSE],

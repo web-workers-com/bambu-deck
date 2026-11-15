@@ -117,6 +117,40 @@ const pages = {
 		setupHint,
 	].join("\n"),
 	"control.html": [printerSelect, setupHint].join("\n"),
+	"preheat.html": [
+		printerSelect,
+		select("Vorgabe", "preset", [["pla", "PLA · 220° / 60°"], ["petg", "PETG · 250° / 75°"], ["abs", "ABS/ASA · 260° / 100°"], ["tpu", "TPU · 230° / 40°"], ["cool", "Abkühlen (alles aus)"]], "Heizt nur, wenn gerade nicht gedruckt wird. Noch ein Druck, während die Vorgabe heizt, schaltet wieder aus."),
+		setupHint,
+	].join("\n"),
+	"fan.html": [
+		printerSelect,
+		select("Lüfter", "which", [["part", "Bauteillüfter"], ["aux", "Hilfslüfter (Seite)"], ["chamber", "Kammerlüfter"]], "Drücken wechselt aus → 50 % → 100 %. Der A1 hat nur den Bauteillüfter. Beim Drucken stellt der Slicer die Lüfter bald wieder selbst."),
+		setupHint,
+	].join("\n"),
+	"info.html": [
+		printerSelect,
+		select("Zeigt zuerst", "view", [["eta", "Fertig um (Uhrzeit)"], ["remaining", "Restzeit"], ["layer", "Schicht"], ["job", "Dateiname"]], "Drücken wechselt die Anzeige."),
+		setupHint,
+	].join("\n"),
+	"move.html": [
+		printerSelect,
+		select("Bewegung", "what", [["home", "Referenzfahrt (G28)"], ["zup", "Z +10 mm"], ["zdown", "Z −10 mm"]], "Nur wenn nicht gedruckt wird. Vor Z-Bewegungen einmal Referenzfahrt."),
+		setupHint,
+	].join("\n"),
+	"filament.html": [
+		printerSelect,
+		select("Aktion", "mode", [["unload", "Entladen"], ["load", "Laden"]]),
+		select("Spule (zum Laden)", "slot", [["A1", "A1"], ["A2", "A2"], ["A3", "A3"], ["A4", "A4"], ["B1", "B1"], ["B2", "B2"], ["B3", "B3"], ["B4", "B4"], ["C1", "C1"], ["C2", "C2"], ["C3", "C3"], ["C4", "C4"], ["D1", "D1"], ["D2", "D2"], ["D3", "D3"], ["D4", "D4"], ["HT1", "AMS HT 1"], ["HT2", "AMS HT 2"], ["Ext", "Externe Spule"]], "Nur wenn nicht gedruckt wird. Die Düse heizt auf die Temperatur der Spule."),
+		setupHint,
+	].join("\n"),
+	"gcode.html": [
+		printerSelect,
+		`<sdpi-item label="Name"><sdpi-textfield setting="name" placeholder="Düse putzen"></sdpi-textfield></sdpi-item>`,
+		`<sdpi-item label="G-Code"><sdpi-textarea setting="gcode" rows="6" placeholder="G28&#10;G1 Z50 F600"></sdpi-textarea></sdpi-item>`,
+		`<sdpi-item label="Beim Drucken"><sdpi-checkbox setting="whilePrinting" label="auch während eines Drucks senden"></sdpi-checkbox></sdpi-item>`,
+		`<div class="hint">Eine Zeile pro Befehl. Wird ohne Rückfrage gesendet, also vorsichtig mit Bewegungen und Temperaturen.</div>`,
+		setupHint,
+	].join("\n"),
 	"camera.html": [
 		printerSelect,
 		`<div class="hint">Drücken legt das Live-Bild über das ganze Deck, noch ein Druck führt zurück (nach 5 Minuten von selbst). <b>X1, H2, P2S</b>: am Drucker <b>LAN-Liveview</b> einschalten, und auf dem Computer muss <b>ffmpeg</b> installiert sein (Windows: <code>winget install ffmpeg</code>). <b>P1, A1</b> brauchen nichts davon.</div>`,

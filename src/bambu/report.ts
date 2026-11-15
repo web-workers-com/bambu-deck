@@ -27,6 +27,11 @@ export type Tray = {
 	/** Bambu spool with RFID? */
 	rfid: boolean;
 	active: boolean;
+	/** Unit (0..3, 128.. for HT, 255 external) and tray index in it, for load commands. */
+	amsId: number;
+	trayIndex: number;
+	/** Nozzle temperature the spool wants, from its min/max (undefined when unknown). */
+	temp: number | undefined;
 };
 
 export type AmsUnit = {
@@ -63,6 +68,10 @@ export type Status = {
 	chamber: number | undefined;
 	/** Part cooling fan in percent. */
 	fan: number;
+	/** Auxiliary fan (side) in percent. */
+	fanAux: number;
+	/** Chamber (exhaust) fan in percent. */
+	fanChamber: number;
 	/** 1 silent, 2 standard, 3 sport, 4 ludicrous. */
 	speed: number;
 	light: boolean | undefined;
@@ -177,7 +186,23 @@ function tray(raw: Raw, unitId: number, activeSlot: number | undefined): Tray {
 		remain: remain >= 0 && remain <= 100 && (rfid || remain > 0) ? remain : undefined,
 		rfid,
 		active: activeSlot === slot,
+		amsId: unitId,
+		trayIndex: unitId >= 128 ? 0 : index,
+		temp: spoolTemp(raw, material),
 	};
+}
+
+/** Typical nozzle temperatures when the spool does not say. */
+const MATERIAL_TEMP: Record<string, number> = { PLA: 220, PETG: 250, ABS: 260, ASA: 260, TPU: 230, PA: 280, PC: 270 };
+
+function spoolTemp(raw: Raw, material: string): number | undefined {
+	const lo = num(raw.nozzle_temp_min, 0);
+	const hi = num(raw.nozzle_temp_max, 0);
+	if (lo > 0 && hi >= lo) {
+		return Math.round((lo + hi) / 2);
+	}
+	const base = material.toUpperCase().split(/[-\s]/)[0] ?? "";
+	return MATERIAL_TEMP[base];
 }
 
 const SEVERITY: Record<number, Hms["severity"]> = { 1: "fatal", 2: "serious", 3: "common", 4: "info" };
@@ -256,7 +281,7 @@ export function toStatus(p: Raw, o: StatusOptions = {}): Status {
 	let external: Tray | undefined;
 	if (vt) {
 		const t = tray({ ...vt, id: 0 }, 0, undefined);
-		external = { ...t, slot: 254, label: "Ext", active: activeSlot === 254 };
+		external = { ...t, slot: 254, label: "Ext", active: activeSlot === 254, amsId: 255, trayIndex: 0 };
 	}
 
 	const light = Array.isArray(p.lights_report) ? p.lights_report.find((l: Raw) => l?.node === "chamber_light") : undefined;
@@ -276,6 +301,8 @@ export function toStatus(p: Raw, o: StatusOptions = {}): Status {
 		bedTarget: num(p.bed_target_temper),
 		chamber: p.chamber_temper !== undefined ? num(p.chamber_temper) : undefined,
 		fan: Math.round((num(p.cooling_fan_speed) / 15) * 100),
+		fanAux: Math.round((num(p.big_fan1_speed) / 15) * 100),
+		fanChamber: Math.round((num(p.big_fan2_speed) / 15) * 100),
 		speed: num(p.spd_lvl, 2) || 2,
 		light: light ? light.mode !== "off" : undefined,
 		ams: units,

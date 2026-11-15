@@ -4,6 +4,8 @@
 
 Runs on your LAN over MQTT. No account, no cloud, no telemetry.
 
+**[bambu-deck.com](https://bambu-deck.com)** · [Download the latest release](https://github.com/web-workers-com/bambu-deck/releases/latest) · [Report a printer or a bug](https://github.com/web-workers-com/bambu-deck/issues)
+
 <img src=".github/assets/hero.png" alt="Bambu Deck keys: Bao printing at 63 %, time left, temperatures, AMS spools, humidity, speed, stop, light" width="816">
 
 > Unofficial community project, not affiliated with Bambu Lab. Bambu Lab, X1, P1, P2, A1, H2 and AMS are trademarks of their owners.
@@ -28,6 +30,12 @@ The UI is in German for now.
 | Stop | Only after holding the key for two seconds |
 | Dial (Stream Deck +) | Nozzle, bed, fan or speed |
 | Test alarm | A sample "done" or "error" alarm |
+| Preheat | PLA, PETG, ABS/ASA, TPU or cool down; shows the heat-up, press again to switch off. Only while not printing |
+| Fan | Part, auxiliary or chamber fan: off → 50 % → 100 % |
+| Job info | Done at (clock time), time left, layer or file name; press to switch |
+| Axes | Home (G28), Z +10 mm, Z −10 mm. Only while not printing |
+| Filament | Load a spool from the AMS (its colour on the key) or unload. Only while not printing |
+| G-code | Your own macro with its own name, optionally also while printing |
 | Camera | Press to put the live picture across the whole deck, every key showing its part; press again to go back (stops by itself after 5 minutes). X1, H2, P2S need LAN liveview on the printer and ffmpeg on the computer (`winget install ffmpeg`); P1 and A1 send JPEGs directly |
 
 ## Alarm

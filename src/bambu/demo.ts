@@ -157,8 +157,16 @@ export class DemoPrinter extends EventEmitter<PrinterEvents> implements Printer 
 			case "bed":
 				this.#apply({ bed_target_temper: command.target });
 				break;
-			case "fan":
-				this.#apply({ cooling_fan_speed: String(Math.round((command.percent / 100) * 15)) });
+			case "fan": {
+				const field = command.which === "aux" ? "big_fan1_speed" : command.which === "chamber" ? "big_fan2_speed" : "cooling_fan_speed";
+				this.#apply({ [field]: String(Math.round((command.percent / 100) * 15)) });
+				break;
+			}
+			case "load":
+				this.#apply({ ams: { tray_now: String(command.slot) } });
+				break;
+			case "unload":
+				this.#apply({ ams: { tray_now: "255" } });
 				break;
 		}
 		setTimeout(() => this.emit("result", { command: command.kind, ok: true, reason: "" }), 150).unref?.();

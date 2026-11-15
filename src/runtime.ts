@@ -10,7 +10,7 @@ import { join } from "node:path";
 
 import { AlertCenter } from "./alerts.js";
 import { Camera, cameraKind } from "./bambu/camera.js";
-import type { Command } from "./bambu/commands.js";
+import { replyName, type Command } from "./bambu/commands.js";
 import type { Printer } from "./bambu/connection.js";
 import { Fleet, type GlobalSettings } from "./bambu/fleet.js";
 import type { GuideState } from "./setup.js";
@@ -83,9 +83,7 @@ export async function send(printer: Printer | undefined, command: Command, key?:
 		center.noteStop(printer.config.id);
 	}
 	if (key) {
-		// gcode commands are named "gcode_line" in the reply.
-		const reply = ["nozzle", "bed", "fan"].includes(command.kind) ? "gcode_line" : command.kind === "light" ? "ledctrl" : command.kind === "speed" ? "print_speed" : command.kind;
-		waiting.set(`${printer.config.id}:${reply}`, key);
+		waiting.set(`${printer.config.id}:${replyName(command)}`, key);
 	}
 	return true;
 }
