@@ -11,11 +11,12 @@ import streamDeck, {
 } from "@elgato/streamdeck";
 import type { JsonObject } from "@elgato/utils";
 
+import { cameraDeckKey } from "../render/camera.js";
 import { guideKey } from "../render/guide.js";
 import { testKey } from "../render/keys.js";
 import { alertKey, pictureMarkup } from "../render/scene.js";
 import { roleAt } from "../roles.js";
-import { alertLeft, center, closeGuide, connecting, fleet, guideEvents, guideFor, send, setGuide, startDemo } from "../runtime.js";
+import { alertLeft, cameraEvents, cameraFor, center, closeCamera, closeGuide, connecting, fleet, guideEvents, guideFor, send, setGuide, startDemo } from "../runtime.js";
 import { guideAt, guideNext } from "../setup.js";
 import { Ticker } from "./ticker.js";
 
@@ -30,6 +31,7 @@ const HOLD_MS = 2000;
 export class AlertAction extends SingletonAction {
 	#scenes = new Map<string, { at: number; markup: string }>();
 	#holding: { id: string; since: number } | undefined;
+	#camera = new Map<string, { stamp: string; image: string }>();
 	#ticker = new Ticker(100, (key: KeyAction<any>, t) => {
 		const at = key.coordinates;
 		if (!at) {
@@ -37,6 +39,19 @@ export class AlertAction extends SingletonAction {
 		}
 		const { columns, rows } = key.device.size;
 		const alert = center.current;
+		const view = alert ? undefined : cameraFor(key.device.id);
+		if (view) {
+			// A frame's images are built once per key; the ticker skips identical ones.
+			const { camera, printer } = view;
+			const stamp = `${camera.frameNo}:${camera.frameNo ? "" : `${camera.problem}:${Math.floor(t * 5)}`}`;
+			const cached = this.#camera.get(key.id);
+			if (cached?.stamp === stamp) {
+				return cached.image;
+			}
+			const image = cameraDeckKey({ columns, rows, jpeg: camera.latest, printer: printer.config.name, problem: camera.problem, t }, at.column, at.row);
+			this.#camera.set(key.id, { stamp, image });
+			return image;
+		}
 		const guide = alert ? undefined : guideFor(key.device.id);
 		if (guide) {
 			const printer = connecting();
@@ -63,6 +78,10 @@ export class AlertAction extends SingletonAction {
 		super();
 		center.on("change", () => this.#ticker.invalidate());
 		guideEvents.on("change", () => this.#ticker.invalidate());
+		cameraEvents.on("change", () => {
+			this.#camera.clear();
+			this.#ticker.invalidate();
+		});
 	}
 
 	override onWillAppear(ev: WillAppearEvent): void {
@@ -80,6 +99,10 @@ export class AlertAction extends SingletonAction {
 		const at = ev.action.coordinates;
 		const { columns, rows } = ev.action.device.size;
 		const alert = center.current;
+		if (!alert && cameraFor(ev.action.device.id)) {
+			closeCamera(ev.action.device.id);
+			return;
+		}
 		const guide = alert ? undefined : guideFor(ev.action.device.id);
 		if (guide) {
 			const item = at ? guideAt(columns, rows, at.column, at.row, guide, !!connecting()) : { kind: "blank" as const };

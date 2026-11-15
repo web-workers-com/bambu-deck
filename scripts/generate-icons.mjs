@@ -10,6 +10,7 @@ import sharp from "sharp";
 import { toStatus } from "../.build/bambu/report.js";
 import { humidityKey, lightKey, pauseKey, printerKey, speedKey, stopKey, tempKey, testKey, trayKey } from "../.build/render/keys.js";
 import { panda } from "../.build/render/panda.js";
+import { cameraKey } from "../.build/render/camera.js";
 import { DEFS } from "../.build/render/svg.js";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "com.bambudeck.plugin.sdPlugin", "imgs");
@@ -69,6 +70,7 @@ const keys = {
 	speed: speedKey(3),
 	dial: tempKey(sample, "nozzle"),
 	test: testKey("done"),
+	camera: cameraKey("X1C"),
 };
 
 for (const [name, uri] of Object.entries(keys)) {

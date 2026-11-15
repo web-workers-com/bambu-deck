@@ -117,6 +117,11 @@ const pages = {
 		setupHint,
 	].join("\n"),
 	"control.html": [printerSelect, setupHint].join("\n"),
+	"camera.html": [
+		printerSelect,
+		`<div class="hint">Drücken legt das Live-Bild über das ganze Deck, noch ein Druck führt zurück (nach 5 Minuten von selbst). <b>X1, H2, P2S</b>: am Drucker <b>LAN-Liveview</b> einschalten, und auf dem Computer muss <b>ffmpeg</b> installiert sein (Windows: <code>winget install ffmpeg</code>). <b>P1, A1</b> brauchen nichts davon.</div>`,
+		setupHint,
+	].join("\n"),
 	"speed.html": [
 		printerSelect,
 		`<sdpi-item label="Ludicrous"><sdpi-checkbox setting="ludicrous" label="auch Ludicrous anbieten"></sdpi-checkbox></sdpi-item>`,

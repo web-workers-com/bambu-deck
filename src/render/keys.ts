@@ -232,10 +232,14 @@ export function trayKey(tray: Tray | undefined, stage: Stage, t: number, label?:
 }
 
 /** AMS humidity (and drying, where the AMS can dry). */
-export function humidityKey(unit: AmsUnit | undefined, t: number): string {
+export function humidityKey(unit: AmsUnit | undefined, t: number, wanted = "A"): string {
 	let inner = BG;
 	if (!unit) {
-		inner += text("kein AMS", { x: 60, y: 66, size: 15, max: 96, fill: C.grey });
+		// Name the unit: "kein AMS" next to a full AMS A looks wrong when this key is for B.
+		const title = `AMS ${wanted}`;
+		inner += text(title, { x: 60, y: 28, size: 13, max: 100, fill: C.label, face: "body" });
+		inner += `<path d="M60 38 C 70 52, 76 60, 76 68 a16 16 0 0 1 -32 0 c0 -8 6 -16 16 -30z" fill="none" stroke="#4A4F57" stroke-width="3" stroke-dasharray="5 5" stroke-linejoin="round"/>`;
+		inner += text("nicht da", { x: 60, y: 104, size: 15, max: 96, fill: C.grey });
 		return keyImage(inner);
 	}
 	const title = unit.kind === "ht" ? unit.label : `AMS ${unit.label}`;

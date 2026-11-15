@@ -28,6 +28,7 @@ The UI is in German for now.
 | Stop | Only after holding the key for two seconds |
 | Dial (Stream Deck +) | Nozzle, bed, fan or speed |
 | Test alarm | A sample "done" or "error" alarm |
+| Camera | Press to put the live picture across the whole deck, every key showing its part; press again to go back (stops by itself after 5 minutes). X1, H2, P2S need LAN liveview on the printer and ffmpeg on the computer (`winget install ffmpeg`); P1 and A1 send JPEGs directly |
 
 ## Alarm
 

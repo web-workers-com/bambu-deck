@@ -37,7 +37,6 @@ const NOZZLE = key("temp", "Temperaturen", { what: "nozzle" });
 const BED = key("temp", "Temperaturen", { what: "bed" });
 const CHAMBER = key("temp", "Temperaturen", { what: "chamber" });
 const HUMIDITY = key("humidity", "AMS-Feuchte", { unit: "A" });
-const HUMIDITY_B = key("humidity", "AMS-Feuchte", { unit: "B" });
 const PAUSE = key("pause", "Pause / Weiter");
 const STOP = key("stop", "Stopp (halten)");
 const LIGHT = key("light", "Kammerlicht");
@@ -45,6 +44,7 @@ const SPEED = key("speed", "Tempo");
 const TEST = key("test", "Alarm testen", { level: "done" });
 const TEST_ERROR = key("test", "Alarm testen", { level: "error" });
 const ALERT = key("alert", "Alarm-Taste");
+const CAMERA = key("camera", "Kamera");
 
 // Dials (Stream Deck +): nozzle, bed, fan, speed.
 const dial = (what) => key("dial", "Drehregler", { what });
@@ -60,12 +60,12 @@ function grid(rows) {
 const MK2 = [
 	[BAO, TEMPS, HUMIDITY, LIGHT, SPEED],
 	[tray("A1"), tray("A2"), tray("A3"), tray("A4"), tray("active")],
-	[PAUSE, NOZZLE, BED, TEST, STOP],
+	[PAUSE, CAMERA, BED, TEST, STOP],
 ];
 const XL = [
 	[BAO, P2, P3, P4, TEMPS, HUMIDITY, LIGHT, SPEED],
 	[tray("A1"), tray("A2"), tray("A3"), tray("A4"), tray("B1"), tray("B2"), tray("B3"), tray("B4")],
-	[tray("active"), tray("Ext"), tray("HT1"), HUMIDITY_B, NOZZLE, BED, CHAMBER, null],
+	[tray("active"), tray("Ext"), tray("HT1"), CAMERA, NOZZLE, BED, CHAMBER, null],
 	[PAUSE, null, null, TEST, TEST_ERROR, null, null, STOP],
 ];
 const SMALL = [
@@ -83,7 +83,7 @@ const DEVICES = [
 	{ suffix: " Neo", type: 9, model: "20GBJ9901", size: [4, 2], layout: SMALL },
 	{ suffix: " Studio", type: 10, model: "20GBO9901", size: [16, 2], layout: [[...XL[0], ...XL[1]], [...XL[2], ...XL[3]]], dials: [dial("nozzle"), dial("bed")] },
 	{ suffix: " Virtual", type: 11, model: "UI Stream Deck", size: [8, 8], layout: XL },
-	{ suffix: " Galleon", type: 12, model: "GRETSCH", size: [3, 4], layout: [[BAO, TEMPS, LIGHT], [tray("A1"), tray("A2"), tray("A3")], [tray("A4"), tray("active"), HUMIDITY], [PAUSE, SPEED, STOP]], dials: [dial("nozzle"), dial("bed")] },
+	{ suffix: " Galleon", type: 12, model: "GRETSCH", size: [3, 4], layout: [[BAO, TEMPS, LIGHT], [tray("A1"), tray("A2"), tray("A3")], [tray("A4"), tray("active"), HUMIDITY], [PAUSE, CAMERA, STOP]], dials: [dial("nozzle"), dial("bed")] },
 	{ suffix: " Plus XL", type: 13, model: "20GBX9901", size: [9, 4], layout: XL.map((row, i) => [...row, [CHAMBER, tray("C1"), tray("C2"), null][i]]), dials: [...DIALS, dial("fan"), dial("speed")].slice(0, 6) },
 ];
 

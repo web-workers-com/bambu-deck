@@ -111,11 +111,11 @@ export class MqttClient extends EventEmitter<ClientEvents> {
 		return true;
 	}
 
-	end(): void {
+	end(reason = "beendet"): void {
 		if (this.connected) {
 			this.#socket?.write(DISCONNECT);
 		}
-		this.#close("beendet");
+		this.#close(reason);
 	}
 
 	#close(reason: string): void {

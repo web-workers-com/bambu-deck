@@ -9,10 +9,12 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 
 import { AlertCenter } from "./alerts.js";
+import { Camera, cameraKind } from "./bambu/camera.js";
 import type { Command } from "./bambu/commands.js";
 import type { Printer } from "./bambu/connection.js";
 import { Fleet, type GlobalSettings } from "./bambu/fleet.js";
 import type { GuideState } from "./setup.js";
+import { frameRate, frameWidth } from "./render/camera.js";
 import { openExternal, pluginDir } from "./system.js";
 
 export const ALERT_ACTION = "com.bambudeck.plugin.alert";
@@ -137,8 +139,8 @@ center.on("takeover", async () => {
 		if (alerting.has(device.id)) {
 			continue;
 		}
-		if (guiding.delete(device.id)) {
-			// Already on the full-deck profile: the alert takes over from the guide.
+		if (guiding.delete(device.id) || stopViewing(device.id)) {
+			// Already on the full-deck profile: the alert takes over from the guide or the camera.
 			alerting.add(device.id);
 			continue;
 		}
@@ -166,6 +168,7 @@ export function alertLeft(deviceId: string): void {
 		if (!showing(deviceId)) {
 			alerting.delete(deviceId);
 			guiding.delete(deviceId);
+			stopViewing(deviceId);
 		}
 	}, 250).unref?.();
 }
@@ -261,3 +264,82 @@ fleet.on("change", () => {
 	guideEvents.emit("change");
 });
 fleet.on("status", followSetup);
+
+// --- Camera across the whole deck ---------------------------------------------
+
+/** Devices showing a camera, to switch back later. */
+const viewingSet = new Set<string>();
+/** Device → printer whose camera it shows. */
+const viewing = new Map<string, string>();
+const cameras = new Map<string, Camera>();
+const viewTimers = new Map<string, NodeJS.Timeout>();
+export const cameraEvents = new EventEmitter<{ change: [] }>();
+const VIEW_MS = 5 * 60_000;
+
+/** The camera this device shows, if any. */
+export function cameraFor(deviceId: string): { printer: Printer; camera: Camera } | undefined {
+	const printerId = viewing.get(deviceId);
+	const printer = printerId ? fleet.get(printerId) : undefined;
+	const camera = printerId ? cameras.get(printerId) : undefined;
+	return printer && camera ? { printer, camera } : undefined;
+}
+
+/** Ends this device's camera view without switching; true when there was one. */
+function stopViewing(deviceId: string): boolean {
+	const printerId = viewing.get(deviceId);
+	viewingSet.delete(deviceId);
+	clearTimeout(viewTimers.get(deviceId));
+	viewTimers.delete(deviceId);
+	if (!printerId) {
+		return false;
+	}
+	viewing.delete(deviceId);
+	if (![...viewing.values()].includes(printerId)) {
+		cameras.get(printerId)?.stop();
+		cameras.get(printerId)?.removeAllListeners();
+		cameras.delete(printerId);
+	}
+	cameraEvents.emit("change");
+	return true;
+}
+
+/** Shows the printer's camera on the whole deck. */
+export function openCamera(device: DeviceLike & { size: { columns: number; rows: number } }, printer: Printer): boolean {
+	if (!ALERT_PROFILE[device.type as number] || alerting.has(device.id)) {
+		return false;
+	}
+	const id = printer.config.id;
+	let camera = cameras.get(id);
+	if (!camera) {
+		const { columns, rows } = device.size;
+		camera = new Camera(printer.config, cameraKind(printer.model), { width: frameWidth(columns, rows), fps: frameRate(columns, rows) });
+		camera.on("problem", (m) => {
+			streamDeck.logger.info(`${printer.config.name}: ${m}`);
+			cameraEvents.emit("change");
+		});
+		cameras.set(id, camera);
+		camera.start();
+	}
+	viewing.set(device.id, id);
+	clearTimeout(viewTimers.get(device.id));
+	const timer = setTimeout(() => closeCamera(device.id), VIEW_MS);
+	timer.unref?.();
+	viewTimers.set(device.id, timer);
+	cameraEvents.emit("change");
+	if (guiding.delete(device.id) || showing(device.id)) {
+		viewingSet.add(device.id);
+		return true;
+	}
+	void switchToFullDeck(device, viewingSet, "camera");
+	return true;
+}
+
+/** Back to the profile before. */
+export function closeCamera(deviceId: string): void {
+	const switched = viewingSet.has(deviceId);
+	stopViewing(deviceId);
+	if (switched) {
+		viewingSet.add(deviceId);
+		void switchBack(viewingSet, [deviceId]);
+	}
+}

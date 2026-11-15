@@ -41,6 +41,9 @@ export interface Printer extends EventEmitter<PrinterEvents> {
 }
 
 const SILENCE_MS = 90_000;
+/** A printer sends its first report within seconds of "pushall"; silence means the serial does not match. */
+const FIRST_REPORT_MS = 20_000;
+export const NO_REPORT = "Keine Daten: Seriennummer prüfen";
 
 export class LanPrinter extends EventEmitter<PrinterEvents> implements Printer {
 	#client: MqttClient | undefined;
@@ -107,7 +110,9 @@ export class LanPrinter extends EventEmitter<PrinterEvents> implements Printer {
 			this.emit("log", `${this.config.name}: verbunden mit ${host}`);
 			client.subscribe(`device/${serial}/report`);
 			this.send({ kind: "pushall" });
-			this.#feedWatchdog();
+			clearTimeout(this.#watchdog);
+			this.#watchdog = setTimeout(() => client.end(NO_REPORT), FIRST_REPORT_MS);
+			this.#watchdog.unref?.();
 		});
 		client.on("message", (_topic, payload) => this.#onMessage(payload));
 		client.on("close", (reason) => {

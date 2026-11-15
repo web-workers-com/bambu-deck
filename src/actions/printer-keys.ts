@@ -60,7 +60,7 @@ type HumiditySettings = PrinterSettings & { unit?: string };
 export class HumidityAction extends PrinterAction<HumiditySettings> {
 	protected paint(printer: Printer, s: HumiditySettings, t: number): string {
 		const label = (s.unit || "A").toUpperCase();
-		return humidityKey(printer.status.ams.find((u) => u.label === label), t);
+		return humidityKey(printer.status.ams.find((u) => u.label === label), t, label);
 	}
 }
 
