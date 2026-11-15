@@ -15,7 +15,7 @@ import streamDeck, {
 import { LIMITS, SPEED_NAMES, type Command } from "../bambu/commands.js";
 import type { Printer } from "../bambu/connection.js";
 import { lightKey, pauseKey, speedKey, stopKey } from "../render/keys.js";
-import { fleet, send } from "../runtime.js";
+import { fleet, keyAppeared, openGuide, send } from "../runtime.js";
 import { PrinterAction, type PrinterSettings } from "./base.js";
 
 @action({ UUID: "com.bambudeck.plugin.pause" })
@@ -67,6 +67,9 @@ export class StopAction extends PrinterAction {
 
 	override async onKeyDown(ev: KeyDownEvent<PrinterSettings>): Promise<void> {
 		const printer = fleet.get(ev.payload.settings.printer);
+		if (!printer && openGuide(ev.action.device)) {
+			return;
+		}
 		if (!printer || !["printing", "heating", "paused"].includes(printer.status.stage)) {
 			await ev.action.showAlert();
 			return;
@@ -144,6 +147,7 @@ export class DialActionImpl extends SingletonAction<DialSettings> {
 			this.#dials.set(ev.action.id, { action: ev.action, settings: ev.payload.settings });
 			void ev.action.setFeedbackLayout("$B1").then(() => this.#paint(ev.action.id));
 		}
+		keyAppeared(ev.action.device);
 	}
 
 	override onWillDisappear(ev: WillDisappearEvent<DialSettings>): void {

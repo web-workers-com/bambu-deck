@@ -12,7 +12,7 @@ Runs on your LAN over MQTT. No account, no cloud, no telemetry.
 
 Download `bambu-deck-<version>.streamDeckPlugin` from the [latest release](../../releases/latest) and double-click it. Stream Deck installs the plugin with a ready-made profile for every Stream Deck model, plus the alarm profiles.
 
-Then click the **Bao (Drucker)** key and enter your printer's IP address, serial number and access code (on the printer: Settings › Network). Up to four printers. No printer at hand? Switch on the demo printers in the same place.
+Then click the **Bao (Drucker)** key and enter your printer's IP address, serial number and access code (on the printer: Settings › Network, on P1 and A1: Settings › WLAN). Up to four printers. Until a printer answers, Bao explains the setup across the whole deck, step by step for your printer model. No printer at hand? Switch on the demo printers in the same place.
 
 The UI is in German for now.
 

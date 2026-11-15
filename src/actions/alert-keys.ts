@@ -11,10 +11,12 @@ import streamDeck, {
 } from "@elgato/streamdeck";
 import type { JsonObject } from "@elgato/utils";
 
+import { guideKey } from "../render/guide.js";
 import { testKey } from "../render/keys.js";
 import { alertKey, pictureMarkup } from "../render/scene.js";
 import { roleAt } from "../roles.js";
-import { alertLeft, center, fleet, send } from "../runtime.js";
+import { alertLeft, center, closeGuide, connecting, fleet, guideEvents, guideFor, send, setGuide, startDemo } from "../runtime.js";
+import { guideAt, guideNext } from "../setup.js";
 import { Ticker } from "./ticker.js";
 
 const HOLD_MS = 2000;
@@ -22,6 +24,7 @@ const HOLD_MS = 2000;
 /**
  * One key of the full-deck alert. Every key of the bundled alarm profiles is
  * this action; its place on the grid decides what it shows and does.
+ * While no printer is set up (and no alert is up) the same keys show the setup guide.
  */
 @action({ UUID: "com.bambudeck.plugin.alert" })
 export class AlertAction extends SingletonAction {
@@ -34,6 +37,12 @@ export class AlertAction extends SingletonAction {
 		}
 		const { columns, rows } = key.device.size;
 		const alert = center.current;
+		const guide = alert ? undefined : guideFor(key.device.id);
+		if (guide) {
+			const printer = connecting();
+			const item = guideAt(columns, rows, at.column, at.row, guide, !!printer);
+			return guideKey(item, Math.floor(t * 5) / 5, printer && { name: printer.config.host || printer.config.name, problem: printer.problem });
+		}
 		const hold = this.#holding ? Math.min(1, (t * 1000 - this.#holding.since) / HOLD_MS) : 0;
 		if (hold >= 1 && this.#holding) {
 			this.#holding = undefined;
@@ -53,6 +62,7 @@ export class AlertAction extends SingletonAction {
 	constructor() {
 		super();
 		center.on("change", () => this.#ticker.invalidate());
+		guideEvents.on("change", () => this.#ticker.invalidate());
 	}
 
 	override onWillAppear(ev: WillAppearEvent): void {
@@ -70,6 +80,22 @@ export class AlertAction extends SingletonAction {
 		const at = ev.action.coordinates;
 		const { columns, rows } = ev.action.device.size;
 		const alert = center.current;
+		const guide = alert ? undefined : guideFor(ev.action.device.id);
+		if (guide) {
+			const item = at ? guideAt(columns, rows, at.column, at.row, guide, !!connecting()) : { kind: "blank" as const };
+			streamDeck.logger.info(`guide key ${item.kind}`);
+			if (item.kind === "demo") {
+				await startDemo();
+			} else if (item.kind === "later") {
+				closeGuide(ev.action.device.id);
+			} else {
+				const next = guideNext(guide, item);
+				if (next) {
+					setGuide(ev.action.device.id, next);
+				}
+			}
+			return;
+		}
 		const role = at ? roleAt(columns, rows, at.column, at.row, alert?.kind) : "back";
 		streamDeck.logger.info(`alert key ${role}`);
 		const printer = alert ? fleet.get(alert.printerId) : undefined;

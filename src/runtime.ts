@@ -4,6 +4,7 @@
  * alert profile and back.
  */
 import streamDeck, { type KeyAction } from "@elgato/streamdeck";
+import { EventEmitter } from "node:events";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 
@@ -11,6 +12,7 @@ import { AlertCenter } from "./alerts.js";
 import type { Command } from "./bambu/commands.js";
 import type { Printer } from "./bambu/connection.js";
 import { Fleet, type GlobalSettings } from "./bambu/fleet.js";
+import type { GuideState } from "./setup.js";
 import { openExternal, pluginDir } from "./system.js";
 
 export const ALERT_ACTION = "com.bambudeck.plugin.alert";
@@ -40,6 +42,13 @@ export async function loadSettings(): Promise<void> {
 	streamDeck.settings.onDidReceiveGlobalSettings<GlobalSettings>((ev) => fleet.configure(ev.settings));
 	const settings = await streamDeck.settings.getGlobalSettings<GlobalSettings>().catch(() => ({}) as GlobalSettings);
 	fleet.configure(settings);
+	settingsLoaded = true;
+	// Keys that appeared before the settings were known.
+	for (const unit of streamDeck.actions) {
+		if (unit.manifestId !== ALERT_ACTION) {
+			autoGuide(unit.device);
+		}
+	}
 }
 
 /** Keys waiting for a command reply, so a refusal can flash on the right key. */
@@ -87,36 +96,57 @@ function showing(deviceId: string): boolean {
 	return [...streamDeck.actions].some((unit) => unit.manifestId === ALERT_ACTION && unit.device.id === deviceId);
 }
 
-center.on("takeover", async () => {
-	for (const device of streamDeck.devices) {
-		const profile = ALERT_PROFILE[device.type as number];
-		if (!profile || !device.isConnected || alerting.has(device.id)) {
+type DeviceLike = { id: string; name: string; type: unknown; isConnected: boolean };
+
+/**
+ * Puts the device's full-deck profile up and remembers it in `set`, so it can
+ * be switched back later. The alert and the setup guide share that profile.
+ */
+async function switchToFullDeck(device: DeviceLike, set: Set<string>, why: string): Promise<void> {
+	const profile = ALERT_PROFILE[device.type as number];
+	if (!profile || !device.isConnected) {
+		return;
+	}
+	set.add(device.id);
+	streamDeck.logger.info(`${why}: ${device.name} → ${profile}`);
+	await streamDeck.profiles.switchToProfile(device.id, profile).catch((error: Error) => {
+		set.delete(device.id);
+		streamDeck.logger.warn(`${why}: could not switch ${device.name}: ${error.message}`);
+	});
+	// Stream Deck does not say whether the profile exists; check it arrived.
+	setTimeout(() => {
+		if (!showing(device.id) && set.delete(device.id)) {
+			streamDeck.logger.warn(`${why}: ${profile} did not appear on ${device.name}; offering to import it`);
+			offerImport(profile);
+		}
+	}, 2500).unref?.();
+}
+
+async function switchBack(set: Set<string>, ids: string[] = [...set]): Promise<void> {
+	for (const id of ids) {
+		if (!set.delete(id)) {
 			continue;
 		}
-		alerting.add(device.id);
-		streamDeck.logger.info(`alert: ${device.name} → ${profile}`);
-		await streamDeck.profiles.switchToProfile(device.id, profile).catch((error: Error) => {
-			alerting.delete(device.id);
-			streamDeck.logger.warn(`alert: could not switch ${device.name}: ${error.message}`);
-		});
-		// Stream Deck does not say whether the profile exists; check it arrived.
-		setTimeout(() => {
-			if (!showing(device.id) && alerting.delete(device.id)) {
-				streamDeck.logger.warn(`alert: ${profile} did not appear on ${device.name}; offering to import it`);
-				offerImport(profile);
-			}
-		}, 2500).unref?.();
+		// Without a name Stream Deck returns to the profile shown before.
+		await streamDeck.profiles.switchToProfile(id).catch((error: Error) => streamDeck.logger.warn(`could not switch back: ${error.message}`));
+	}
+}
+
+center.on("takeover", async () => {
+	for (const device of streamDeck.devices) {
+		if (alerting.has(device.id)) {
+			continue;
+		}
+		if (guiding.delete(device.id)) {
+			// Already on the full-deck profile: the alert takes over from the guide.
+			alerting.add(device.id);
+			continue;
+		}
+		await switchToFullDeck(device, alerting, "alert");
 	}
 });
 
-center.on("release", async () => {
-	const devices = [...alerting];
-	alerting.clear();
-	for (const id of devices) {
-		// Without a name Stream Deck returns to the profile shown before.
-		await streamDeck.profiles.switchToProfile(id).catch((error: Error) => streamDeck.logger.warn(`alert: could not switch back: ${error.message}`));
-	}
-});
+center.on("release", () => switchBack(alerting));
 
 const offered = new Set<string>();
 
@@ -130,11 +160,104 @@ function offerImport(profile: string): void {
 	openExternal(file);
 }
 
-/** A deck left the alert profile by hand; do not switch it "back" later. */
+/** A deck left the full-deck profile by hand; do not switch it "back" later. */
 export function alertLeft(deviceId: string): void {
 	setTimeout(() => {
 		if (!showing(deviceId)) {
 			alerting.delete(deviceId);
+			guiding.delete(deviceId);
 		}
 	}, 250).unref?.();
 }
+
+// --- Setup guide ---------------------------------------------------------------
+
+let settingsLoaded = false;
+/** Devices the guide was switched onto, to switch back once a printer answers. */
+const guiding = new Set<string>();
+/** Devices the guide opened on by itself this session: only once each. */
+const autoOpened = new Set<string>();
+const guideStates = new Map<string, GuideState>();
+export const guideEvents = new EventEmitter<{ change: [] }>();
+
+/** A printer answers (or the demo runs): nothing left to set up. */
+export function setupDone(): boolean {
+	return fleet.list().some((p) => p.config.id.startsWith("demo-") || p.status.stage !== "offline");
+}
+
+/** The printer being tried while the guide shows, for its "Verbinde …" key. */
+export function connecting(): Printer | undefined {
+	return setupDone() ? undefined : fleet.list()[0];
+}
+
+/** What the guide shows on this device, or nothing when the deck should show alerts. */
+export function guideFor(deviceId: string): GuideState | undefined {
+	if (setupDone()) {
+		return undefined;
+	}
+	return guideStates.get(deviceId) ?? { page: 0 };
+}
+
+export function setGuide(deviceId: string, state: GuideState): void {
+	guideStates.set(deviceId, state);
+	guideEvents.emit("change");
+}
+
+/** Shows the guide across the whole deck: on its own when no printer is entered, or when a "Einrichten" key is pressed. */
+export function openGuide(device: DeviceLike, auto = false): boolean {
+	if (!settingsLoaded || setupDone() || alerting.has(device.id)) {
+		return false;
+	}
+	if (guiding.has(device.id) || showing(device.id)) {
+		return true;
+	}
+	if (auto && (fleet.list().length > 0 || autoOpened.has(device.id))) {
+		return false;
+	}
+	autoOpened.add(device.id);
+	void switchToFullDeck(device, guiding, "setup");
+	return true;
+}
+
+function autoGuide(device: DeviceLike): void {
+	// A moment later, so the switch does not race Stream Deck loading the profile.
+	setTimeout(() => openGuide(device, true), 600).unref?.();
+}
+
+/** A Bambu Deck key appeared; without printers the guide takes the deck. */
+export function keyAppeared(device: DeviceLike): void {
+	if (settingsLoaded) {
+		autoGuide(device);
+	}
+}
+
+/** "Später": back to the profile before; the guide does not come back by itself. */
+export function closeGuide(deviceId: string): void {
+	void switchBack(guiding, [deviceId]);
+}
+
+/** Demo key: switches the simulated printers on, which ends the guide. */
+export async function startDemo(): Promise<void> {
+	const settings = await streamDeck.settings.getGlobalSettings<GlobalSettings>().catch(() => ({}) as GlobalSettings);
+	const next = { ...settings, demo: true };
+	await streamDeck.settings.setGlobalSettings(next);
+	fleet.configure(next);
+}
+
+let wasDone = false;
+const followSetup = () => {
+	const done = setupDone();
+	if (done !== wasDone) {
+		wasDone = done;
+		if (done) {
+			guideStates.clear();
+			void switchBack(guiding);
+		}
+		guideEvents.emit("change");
+	}
+};
+fleet.on("change", () => {
+	followSetup();
+	guideEvents.emit("change");
+});
+fleet.on("status", followSetup);

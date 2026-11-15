@@ -1,6 +1,6 @@
 {
   "name": "bambu-deck",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Bambu Deck: a Stream Deck plugin for Bambu Lab printers. Bao the panda watches your prints and takes over the deck when one needs you.",
   "license": "MIT",
   "type": "module",
@@ -22,6 +22,7 @@
     "unlink": "node scripts/dev-link.mjs --unlink",
     "probe": "npm run prebuild-scripts && node scripts/probe.mjs",
     "preview": "npm run prebuild-scripts && node scripts/preview.mjs",
+    "preview:guide": "npm run prebuild-scripts && node scripts/preview-guide.mjs",
     "pack:ci": "rollup -c && node scripts/pack.mjs"
   },
   "dependencies": {

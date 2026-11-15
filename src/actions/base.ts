@@ -15,7 +15,7 @@ import type { JsonObject } from "@elgato/utils";
 
 import type { Printer } from "../bambu/connection.js";
 import { setupKey } from "../render/keys.js";
-import { center, fleet } from "../runtime.js";
+import { center, fleet, keyAppeared, openGuide } from "../runtime.js";
 import { Ticker } from "./ticker.js";
 
 export type PrinterSettings = JsonObject & { printer?: string };
@@ -46,6 +46,7 @@ export abstract class PrinterAction<S extends PrinterSettings = PrinterSettings>
 		if (ev.action.isKey()) {
 			this.ticker.add(ev.action);
 		}
+		keyAppeared(ev.action.device);
 	}
 
 	override onWillDisappear(ev: WillDisappearEvent<S>): void {
@@ -64,7 +65,10 @@ export abstract class PrinterAction<S extends PrinterSettings = PrinterSettings>
 		}
 		const printer = fleet.get(ev.payload.settings.printer);
 		if (!printer) {
-			await ev.action.showAlert();
+			// "Einrichten": the guide across the whole deck.
+			if (!openGuide(ev.action.device)) {
+				await ev.action.showAlert();
+			}
 			return;
 		}
 		await this.press(printer, ev.payload.settings, ev.action);

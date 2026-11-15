@@ -68,21 +68,30 @@ const printerSetup = (n) => `<details${n === 1 ? " open" : ""}>
 <sdpi-item label="Modell"><sdpi-select setting="p${n}_model" global default="auto">${MODELS.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</sdpi-select></sdpi-item>
 </details>`;
 
+const whereHint = `<div class="hint">IP-Adresse und Zugangscode stehen am Drucker unter <b>Einstellungen › Netzwerk</b> (X1, P2S, H2) bzw. <b>Einstellungen › WLAN</b> (P1, A1). Die Seriennummer steht auf dem Aufkleber am Drucker. Die Verbindung läuft direkt im Heimnetz, ohne Cloud. Zum Steuern (Pause, Licht, Tempo) braucht neuere Firmware den LAN-Modus mit Entwicklermodus; Anzeigen geht immer.</div>`;
+const setupSection = `<details open><summary>Drucker einrichten</summary>
+${whereHint}
+${[1, 2, 3, 4].map(printerSetup).join("\n")}
+</details>`;
+const demoSection = `<details><summary>Demo</summary>
+<sdpi-item label="Demo-Drucker"><sdpi-checkbox setting="demo" global label="drei simulierte Drucker zeigen"></sdpi-checkbox></sdpi-item>
+<div class="hint">X1C mit AMS, A1 mini mit AMS lite (Filament läuft aus) und H2D mit AMS 2 Pro und AMS HT (trocknet). Zum Ausprobieren ohne Drucker.</div>
+</details>`;
+
 const pages = {
+	"setup.html": [
+		`<div class="hint">Trag hier deinen Drucker ein. Sobald er antwortet, verschwindet die Anleitung und das Deck zeigt wieder dein Profil.</div>`,
+		setupSection,
+		demoSection,
+	].join("\n"),
 	"printer.html": [
 		printerSelect,
 		select("Aussehen", "look", [
 			["bao", "Bao groß"],
 			["compact", "Kompakt (Name und Zustand)"],
 		], "Kompakt passt, wenn mehrere Drucker nebeneinander liegen."),
-		`<details open><summary>Drucker einrichten</summary>
-<div class="hint">IP-Adresse, Seriennummer und Zugangscode stehen am Drucker unter <b>Einstellungen › Netzwerk</b> (A1: <b>Einstellungen › WLAN</b>). Die Verbindung läuft direkt im Heimnetz, ohne Cloud. Zum Steuern (Pause, Licht, Tempo) braucht neuere Firmware den LAN-Modus mit Entwicklermodus; Anzeigen geht immer.</div>
-${[1, 2, 3, 4].map(printerSetup).join("\n")}
-</details>`,
-		`<details><summary>Demo</summary>
-<sdpi-item label="Demo-Drucker"><sdpi-checkbox setting="demo" global label="drei simulierte Drucker zeigen"></sdpi-checkbox></sdpi-item>
-<div class="hint">X1C mit AMS, A1 mini mit AMS lite (Filament läuft aus) und H2D mit AMS 2 Pro und AMS HT (trocknet). Zum Ausprobieren ohne Drucker.</div>
-</details>`,
+		setupSection,
+		demoSection,
 	].join("\n"),
 	"tray.html": [
 		printerSelect,
