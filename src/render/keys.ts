@@ -190,6 +190,16 @@ export function setupKey(): string {
 	);
 }
 
+/** The "active spool" key when nothing is loaded: say so in words. */
+export function noActiveTrayKey(): string {
+	let inner = BG;
+	inner += text("Im Drucker", { x: 60, y: 24, size: 12, max: 100, fill: C.label, face: "body" });
+	inner += `<circle cx="60" cy="56" r="22" fill="none" stroke="#4A4F57" stroke-width="3" stroke-dasharray="5 5"/>`;
+	inner += text("keine Spule", { x: 60, y: 98, size: 14, max: 100, fill: C.greyLight });
+	inner += text("geladen", { x: 60, y: 113, size: 11, max: 100, fill: C.grey, face: "body" });
+	return keyImage(inner);
+}
+
 /** One AMS slot: the spool in its colour, what is left around it. */
 export function trayKey(tray: Tray | undefined, stage: Stage, t: number, label?: string): string {
 	let inner = BG;

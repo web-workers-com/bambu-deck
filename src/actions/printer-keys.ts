@@ -3,7 +3,7 @@ import { action, type KeyAction } from "@elgato/streamdeck";
 
 import type { Printer } from "../bambu/connection.js";
 import { findTray } from "../bambu/report.js";
-import { humidityKey, printerKey, tempKey, trayKey, type TempWhat, type View } from "../render/keys.js";
+import { humidityKey, noActiveTrayKey, printerKey, tempKey, trayKey, type TempWhat, type View } from "../render/keys.js";
 import { center } from "../runtime.js";
 import { PrinterAction, type PrinterSettings } from "./base.js";
 
@@ -49,7 +49,11 @@ type TraySettings = PrinterSettings & { slot?: string };
 export class TrayAction extends PrinterAction<TraySettings> {
 	protected paint(printer: Printer, s: TraySettings, t: number): string {
 		const slot = s.slot || "A1";
-		return trayKey(findTray(printer.status, slot), printer.status.stage, t, slot === "active" ? "aktiv" : slot);
+		const tray = findTray(printer.status, slot);
+		if (slot === "active" && !tray) {
+			return noActiveTrayKey();
+		}
+		return trayKey(tray, printer.status.stage, t, slot);
 	}
 }
 
