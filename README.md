@@ -18,6 +18,15 @@ Then click the **Bao (Drucker)** key and enter your printer's IP address, serial
 
 The UI is in German for now.
 
+## Connect your printer
+
+<img src=".github/assets/setup.png" alt="Four steps: turn on LAN mode on the printer, find the serial number, enter it in Stream Deck, Bao connects" width="816">
+
+1. On the printer screen: **Settings › Network** (P1 and A1: **Settings › WLAN**), turn on **LAN mode**. For controls (pause, light, preheat) also turn on **developer mode**. IP address and access code are on the same page.
+2. The serial number is on the label on the printer, and in Bambu Handy and Bambu Studio.
+3. Click a Bambu Deck key in Stream Deck and fill in "Drucker einrichten": name, IP address, serial number, access code. For X2D, A2L, H2C, H2D Pro and H3C pick the model by hand.
+4. Bambu Deck connects on your LAN. If nothing comes back, the key says why: timeout, access code or serial number.
+
 ## Keys
 
 | Key | What it does |

@@ -1,7 +1,7 @@
 /** Key images for the extra controls: preheat, fans, job info, axes, filament, G-code. */
 import type { Fan } from "../bambu/commands.js";
 import type { Stage, Status, Tray } from "../bambu/report.js";
-import { BAMBOO, printerOutline, type Shape } from "./printer.js";
+import { TOOLHEAD, printerOutline, type Shape } from "./printer.js";
 import { BG, C, hm, keyImage, ring, text } from "./svg.js";
 
 const OFF = "#4A4F57";
@@ -114,7 +114,7 @@ export type MoveWhat = "home" | "zup" | "zdown";
 /** Axes: home, or Z up/down by 10 mm. Grey while printing. */
 export function moveKey(what: MoveWhat, enabled: boolean): string {
 	const color = enabled ? C.greyLight : OFF;
-	let inner = BG + BAMBOO;
+	let inner = BG + TOOLHEAD;
 	if (what === "home") {
 		inner += `<path d="M40 54 L60 34 L80 54 M46 50 v18 h28 v-18" stroke="${color}" stroke-width="3.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>`;
 		inner += text("Referenz", { x: 60, y: 96, size: 15, max: 100, fill: enabled ? C.text : C.grey });
@@ -130,7 +130,7 @@ export function moveKey(what: MoveWhat, enabled: boolean): string {
 
 /** Load a spool (its colour) or unload whatever is in. */
 export function filamentKey(mode: "load" | "unload", tray: Tray | undefined, label: string, stage: Stage, enabled: boolean): string {
-	let inner = BG + BAMBOO;
+	let inner = BG + TOOLHEAD;
 	const color = mode === "load" && tray?.color ? tray.color : "#6A6F76";
 	inner += `<circle cx="60" cy="46" r="19" fill="${enabled ? color : OFF}" stroke="#4A4F57" stroke-width="1.2"/><circle cx="60" cy="46" r="5" fill="#121417"/>`;
 	const arrow = mode === "load" ? "M86 38 v18 M80 50 l6 6 l6 -6" : "M86 56 v-18 M80 44 l6 -6 l6 6";
@@ -144,7 +144,7 @@ export function filamentKey(mode: "load" | "unload", tray: Tray | undefined, lab
 
 /** A user's G-code macro with its own name. */
 export function gcodeKey(name: string, enabled: boolean): string {
-	let inner = BG + BAMBOO;
+	let inner = BG + TOOLHEAD;
 	const color = enabled ? C.bambooLight : OFF;
 	inner += `<rect x="34" y="26" width="52" height="40" rx="7" fill="none" stroke="${color}" stroke-width="3"/>`;
 	inner += `<path d="M44 40 l8 6 l-8 6 M58 54 h14" stroke="${color}" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;

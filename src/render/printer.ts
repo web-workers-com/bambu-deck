@@ -1,4 +1,4 @@
-/** Printer outlines by model family, and our own bamboo mark. No Bambu Lab artwork. */
+/** Printer outlines by model family and a small toolhead mark. Generic drawings, no Bambu Lab logo. */
 import type { Family } from "../bambu/models.js";
 
 export type Shape = "box" | "open" | "wide";
@@ -25,8 +25,15 @@ export function printerOutline(shape: Shape, cx: number, cy: number, color: stri
 	return `<g transform="translate(${cx} ${cy}) scale(${s})">${m}</g>`;
 }
 
-/** Our mark: a short bamboo stalk with a leaf, in the top-left corner of a key. */
-export const BAMBOO =
-	`<g opacity="0.95"><rect x="11" y="9" width="6" height="22" rx="3" fill="url(#bdBamboo)"/>` +
-	`<path d="M11 16.5 h6 M11 24 h6" stroke="#3E6E22" stroke-width="1.4"/>` +
-	`<path d="M17 14 q5 -5 10 -4 q-4 4 -10 6z" fill="#9BCB62"/></g>`;
+/**
+ * A small toolhead in the key's top-left corner: light housing, dark front,
+ * cutter lever on the side, brass nozzle below. A generic drawing, no logo.
+ */
+export const TOOLHEAD =
+	`<g transform="translate(7 6) scale(1.2)">` +
+	`<rect x="1" y="0" width="20" height="17" rx="4" fill="#E9E6DF"/>` +
+	`<rect x="4" y="3" width="14" height="8" rx="2" fill="#2B2E33"/>` +
+	`<circle cx="15" cy="7" r="1.4" fill="#7DB547"/>` +
+	`<rect x="-1.5" y="5" width="3" height="8" rx="1.5" fill="#A9AEB5"/>` +
+	`<path d="M7.5 17 h7 l-2 4 h-3z" fill="#C9A24A"/>` +
+	`<circle cx="11" cy="22.6" r="1.2" fill="#FFB27A"/></g>`;
